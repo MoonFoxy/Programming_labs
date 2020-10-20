@@ -14,8 +14,7 @@ int main() {
     cout << "Enter number N: ";
     cin >> N;
 
-    int dozensHigh = 20;
-    int dozensLow = 10;
+    int dozens = 10;
 
     if (N >= 2) cout << "2 ";
 
@@ -23,19 +22,16 @@ int main() {
         bool prime = i % 2;
         for (int j = 3; prime && (j * j <= i); j += 2 ) {
             prime = i % j;
-            break;
         }
 
         if (prime) {
-            if ((i > dozensLow) && (i > dozensHigh)) {
-                dozensLow += 10;
-                dozensHigh += 10;
+            if ((i > dozens) && (i > (dozens + 10))) {
+                dozens += 10;
             }
 
-            if ((i > dozensLow) && (i < dozensHigh)) {
+            if ((i > dozens) && (i < (dozens + 10))) {
                 cout << endl;
-                dozensLow += 10;
-                dozensHigh += 10;
+                dozens += 10;
             }
 
             cout << i << " ";
