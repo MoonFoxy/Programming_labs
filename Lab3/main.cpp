@@ -21,18 +21,18 @@ int main() {
 
     for (int i = 3; i <= N; i += 2) {
         bool prime = i % 2;
-        for (int j = 3; prime && j * j <= i; j += 2 ) {
+        for (int j = 3; prime && (j * j <= i); j += 2 ) {
             prime = i % j;
             break;
         }
 
         if (prime) {
-            if (i > dozensLow && i > dozensHigh) {
+            if ((i > dozensLow) && (i > dozensHigh)) {
                 dozensLow += 10;
                 dozensHigh += 10;
             }
 
-            if (i > dozensLow && i < dozensHigh) {
+            if ((i > dozensLow) && (i < dozensHigh)) {
                 cout << endl;
                 dozensLow += 10;
                 dozensHigh += 10;
