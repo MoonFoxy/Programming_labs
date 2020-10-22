@@ -18,7 +18,7 @@ using namespace std;
 
 int main() {
     int X;
-    int minNumber = 0;
+    int minNumber;
     int numberAmount;
     int numberSum = 0;
     int positiveAmount = 0;
@@ -37,7 +37,7 @@ int main() {
             return 0;
         }
 
-        if (X <= minNumber) {
+        if (!minNumber || X <= minNumber) {
             minNumber = X;
         }
 
