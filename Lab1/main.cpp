@@ -15,10 +15,7 @@ int main() {
         cout << "Enter coordinates:\n";
         cin >> X >> Y;
 
-        if ((X == 0) && (Y == 0)) {
-            cout << "Stopped!\n";
-            return 0;
-        }
+        if ((X == 0) && (Y == 0)) break;
 
         if ((X >= 2) && (X <= 6) && (Y <= X)) {
             cout << "Enters\n";
@@ -26,4 +23,6 @@ int main() {
             cout << "Excluded\n";
         }
     }
+
+    cout << "Stopped!\n";
 }

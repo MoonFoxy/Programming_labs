@@ -25,16 +25,12 @@ int main() {
         }
 
         if (prime) {
-            if ((i > dozens) && (i > (dozens + 10))) {
-                dozens += 10;
-            }
-
-            if ((i > dozens) && (i < (dozens + 10))) {
+            if (i > dozens) {
                 cout << endl;
-                dozens += 10;
             }
 
             cout << i << " ";
+            dozens = ((i / 10 + 1) * 10);
         }
     }
 }

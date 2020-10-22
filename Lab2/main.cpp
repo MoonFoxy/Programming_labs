@@ -28,14 +28,7 @@ int main() {
     while(true) {
         cin >> X;
 
-        if (X == 0) {
-            int averageNumber = 1.0 * numberSum / (numberAmount || 1);
-
-            cout << "Minimum number: " << minNumber << endl;
-            cout << "Average: " << averageNumber << endl;
-            cout << "Positive numbers: " << positiveAmount << endl;
-            return 0;
-        }
+        if (X == 0) break;
 
         if (!minNumber || X <= minNumber) {
             minNumber = X;
@@ -48,4 +41,10 @@ int main() {
         numberSum += X;
         numberAmount++;
     }
+
+    int averageNumber = 1.0 * numberSum / (numberAmount || 1);
+
+    cout << "Minimum number: " << minNumber << endl;
+    cout << "Average: " << averageNumber << endl;
+    cout << "Positive numbers: " << positiveAmount << endl;
 }
