@@ -18,8 +18,8 @@ using namespace std;
 
 int main() {
     int X;
-    int minNumber;
-    int numberAmount;
+    int minNumber = 0;
+    int numberAmount = 0;
     int numberSum = 0;
     int positiveAmount = 0;
 
@@ -30,7 +30,7 @@ int main() {
 
         if (X == 0) break;
 
-        if (!minNumber || X <= minNumber) {
+        if ((X <= minNumber) || (minNumber == 0)) {
             minNumber = X;
         }
 
@@ -42,7 +42,7 @@ int main() {
         numberAmount++;
     }
 
-    int averageNumber = 1.0 * numberSum / (numberAmount || 1);
+    int averageNumber = 1.0 * numberSum / (numberAmount == 0) ? 1 : numberAmount;
 
     cout << "Minimum number: " << minNumber << endl;
     cout << "Average: " << averageNumber << endl;
