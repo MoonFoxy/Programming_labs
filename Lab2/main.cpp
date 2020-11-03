@@ -42,7 +42,7 @@ int main() {
         numberAmount++;
     }
 
-    int averageNumber = 1.0 * numberSum / (numberAmount == 0) ? 1 : numberAmount;
+    int averageNumber = float(numberSum) / (numberAmount == 0) ? 1 : numberAmount;
 
     cout << "Minimum number: " << minNumber << endl;
     cout << "Average: " << averageNumber << endl;
