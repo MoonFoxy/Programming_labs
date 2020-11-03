@@ -16,7 +16,8 @@ using namespace std;
     Количество положительных чисел.
 */
 
-int main() {
+int main()
+{
     int X;
     int minNumber = 0;
     int numberAmount = 0;
@@ -25,16 +26,19 @@ int main() {
 
     cout << "Enter numbers:\n";
 
-    while(true) {
+    while(true)
+    {
         cin >> X;
 
         if (X == 0) break;
 
-        if ((X <= minNumber) || (minNumber == 0)) {
+        if ((X <= minNumber) || (minNumber == 0))
+        {
             minNumber = X;
         }
 
-        if (X > 0) {
+        if (X > 0)
+        {
             positiveAmount++;
         }
 

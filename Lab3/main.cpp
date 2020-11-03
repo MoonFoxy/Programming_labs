@@ -9,7 +9,8 @@ using namespace std;
   Вывод: Список простых чисел не превышающие число N.
 */
 
-int main() {
+int main()
+{
     int N;
     cout << "Enter number N: ";
     cin >> N;
@@ -18,14 +19,18 @@ int main() {
 
     if (N >= 2) cout << "2 ";
 
-    for (int i = 3; i <= N; i += 2) {
+    for (int i = 3; i <= N; i += 2)
+    {
         bool prime = true;
-        for (int j = 3; prime && (j * j <= i); j += 2 ) {
+        for (int j = 3; prime && (j * j <= i); j += 2 )
+        {
             prime = (i % j) == 0;
         }
 
-        if (prime) {
-            if (i > dozens) {
+        if (prime)
+        {
+            if (i > dozens)
+            {
                 cout << endl;
             }
 
