@@ -22,9 +22,13 @@ int main()
     for (int i = 3; i <= N; i += 2)
     {
         bool prime = true;
-        for (int j = 3; prime && (j * j <= i); j += 2 )
+        for (int j = 3; j * j <= i; j += 2 )
         {
-            prime = (i % j) == 0;
+            if ((i % j) == 0)
+            {
+                prime = true;
+                break;
+            }
         }
 
         if (prime)
@@ -38,4 +42,5 @@ int main()
             dozens = ((i / 10 + 1) * 10);
         }
     }
+    return 0;
 }

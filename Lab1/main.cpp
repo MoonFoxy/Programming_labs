@@ -30,4 +30,5 @@ int main()
     }
 
     cout << "Stopped!\n";
+    return 0;
 }
