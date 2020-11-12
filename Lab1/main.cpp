@@ -12,7 +12,7 @@ using namespace std;
 int main()
 {
     float X, Y;
-    while(true)
+    while (true)
     {
         cout << "Enter coordinates:\n";
         cin >> X >> Y;

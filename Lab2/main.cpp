@@ -26,13 +26,14 @@ int main()
 
     cout << "Enter numbers:\n";
 
-    while(true)
-    {
-        cin >> X;
+    cin >> X;
+    minNumber = X;
 
+    while (true)
+    {
         if (X == 0) break;
 
-        if ((numberAmount == 0) || (X <= minNumber))
+        if (X <= minNumber)
         {
             minNumber = X;
         }
@@ -44,6 +45,8 @@ int main()
 
         numberSum += X;
         numberAmount++;
+
+        cin >> X;
     }
 
     int averageNumber = float(numberSum) / (numberAmount == 0) ? 1 : numberAmount;
