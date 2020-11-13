@@ -21,19 +21,26 @@ int main()
         cin >> input[i];
     }
 
-    int maxKey;
+    int maxKey = 1;
     int maxSum;
     int maxInThree[3];
-    for (int i = 1; i <= 3; i++)
+    for (int i = 0; i < 3; i++)
     {
+        int sum = 0;
         int key = i * 3;
-        int sum = input[key - 3] + input[key - 2] + input[key - 1];
-
-        maxInThree[i - 1] = sum;
-
-        if (i == 1 || maxSum < sum)
+        maxInThree[i] = input[key];
+        for (int j = 0; j < 3; j++, key++)
         {
-            maxKey = i;
+            sum += input[key];
+            if (maxInThree[i] < input[key])
+            {
+                maxInThree[i] = input[key];
+            }
+        }
+
+        if (i == 0 || maxSum < sum)
+        {
+            maxKey = i + 1;
             maxSum = sum;
         }
     }
