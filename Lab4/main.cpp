@@ -60,7 +60,7 @@ int main()
     cout << "(3):";
     for (int i = 0; i < 9; i++)
     {
-        if ((input[i] & (input[i] - 1)) != 0)
+        if ((input[i] & (input[i] - 1) != 0) && (input[i] != 0))
         {
             if (flag) break;
             continue;
