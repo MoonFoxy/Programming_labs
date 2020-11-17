@@ -21,8 +21,8 @@ int main()
 
     for (int i = 3; i <= N; i += 2)
     {
-        bool prime = true;
-        for (int j = 3; j * j <= i; j += 2 )
+        bool prime = false;
+        for (int j = 3; j * j <= i; j += 2)
         {
             if ((i % j) == 0)
             {
