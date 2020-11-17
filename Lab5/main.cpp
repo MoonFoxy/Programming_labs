@@ -33,7 +33,7 @@ int main()
     {
         for (int j = 0; j < 3; j++)
         {
-            float result = pow(array[i][j], power);
+            double result = pow(array[i][j], power);
             cout << result << " ";
         }
 
