@@ -52,7 +52,7 @@ int main()
     {
         cout << " " << maxInThree[i];
     }
-    delete[] maxInThree;
+    // delete[] maxInThree;
     cout << endl;
 
     bool flag = false;
@@ -107,6 +107,6 @@ int main()
     }
     cout << endl;
 
-    delete[] input;
+    // delete[] input;
     return 0;
 }

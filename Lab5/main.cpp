@@ -62,7 +62,7 @@ int main()
             }
         }
     }
-    delete[] temp, array;
+    // delete[] temp, array;
 
 
     for (int i = 0; i < size; i++)
@@ -73,6 +73,6 @@ int main()
         }
         cout << endl;
     }
-    delete[] result;
+    // delete[] result;
     return 0;
 }
