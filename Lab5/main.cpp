@@ -12,8 +12,7 @@ using namespace std;
 int main()
 {
     const int size = 3;
-    int array[size][size];
-    int result[size][size];
+    unsigned long long result[size][size], array[size][size];
 
     cout << "Enter numbers: ";
 
@@ -31,7 +30,7 @@ int main()
     cout << "Enter power: ";
     cin >> power;
 
-    int temp[size][size];
+    unsigned long long temp[size][size];
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
