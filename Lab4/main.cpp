@@ -16,10 +16,7 @@ using namespace std;
 int main()
 {
     int input[9];
-    for(int i = 0; i < 9; i++)
-    {
-        cin >> input[i];
-    }
+    for (int i = 0; i < 9; i++) cin >> input[i];
 
     int maxKey = 1;
     int maxSum;
@@ -86,14 +83,14 @@ int main()
         sorted = false;
         for (int i = left; i <= right; i++) {
             if (input[i - 1] > input[i]) {
-                swap (input[i - 1], input[i]);
+                swap(input[i - 1], input[i]);
                 sorted = true;
             }
         }
         right--;
         for (int i = right; i >= left; i--) {
             if (input[i - 1] > input[i]) {
-                swap (input[i - 1], input[i]);
+                swap(input[i - 1], input[i]);
                 sorted = true;
             }
         }
