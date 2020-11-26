@@ -1,7 +1,5 @@
 #include <iostream>
 
-using namespace std;
-
 /*
   Задача: Треугольник с координатам (2; 6), (6; 6), (6; 2). Проверить входит ли точка в треугольник.
   Ввод: Целое положительные числа X и Y.
@@ -14,21 +12,23 @@ int main()
     float X, Y;
     while (true)
     {
-        cout << "Enter coordinates:\n";
-        cin >> X >> Y;
+        std::cout << "Enter coordinates:\n";
+        std::cin >> X >> Y;
 
         if ((X == 0) && (Y == 0)) break;
 
         if ((X >= 2) && (X <= 6) && (Y <= X))
         {
-            cout << "Enters\n";
+            std::cout << "Enters +\n";
         }
         else
         {
-            cout << "Excluded\n";
+            std::cout << "Excluded -\n";
         }
     }
 
-    cout << "Stopped!\n";
+    std::cout << "Stopped!\n";
+
+    system("pause");
     return 0;
 }

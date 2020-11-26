@@ -1,7 +1,5 @@
 #include <iostream>
 
-using namespace std;
-
 /*
   Ввод:
   С клавиатуры вводится двумерный массив целых чисел размерностью 3х3. Затем вводится натуральная n.
@@ -12,32 +10,25 @@ using namespace std;
 int main()
 {
     const int size = 3;
-    unsigned long long result[size][size], array[size][size];
+    unsigned long long array[size][size], temp[size][size];
 
-    cout << "Enter numbers: ";
+    std::cout << "Enter numbers: ";
 
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {
-            cin >> array[i][j];
-            result[i][j] = array[i][j];
+            std::cin >> array[i][j];
+            temp[i][j] = array[i][j];
         }
     }
 
     int power;
 
-    cout << "Enter power: ";
-    cin >> power;
+    std::cout << "Enter power: ";
+    std::cin >> power;
 
-    unsigned long long temp[size][size];
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            temp[i][j] = 0;
-        }
-    }
+    unsigned long long result[size][size] = { 0 };
 
     for (int p = 1; p < power; p++)
     {
@@ -47,31 +38,22 @@ int main()
             {
                 for (int k = 0; k < size; k++)
                 {
-                    temp[i][j] += result[i][k] * array[k][j];
+                    result[i][j] += array[k][j] * temp[i][k];
                 }
             }
         }
-
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
-                result[i][j] = temp[i][j];
-                temp[i][j] = 0;
-            }
-        }
     }
-    // delete[] temp, array;
-
 
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
         {
-            cout << result[i][j] << " ";
+            std::cout << result[i][j] << " ";
         }
-        cout << endl;
+
+        std::cout << "\n";
     }
-    // delete[] result;
+
+    system("pause");
     return 0;
 }

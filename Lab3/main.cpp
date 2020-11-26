@@ -1,7 +1,5 @@
 #include <iostream>
 
-using namespace std;
-
 /*
   Задача: Вывести на экран все простые числа не превышающие число N.
   Ввод: Целое положительное число N.
@@ -12,12 +10,12 @@ using namespace std;
 int main()
 {
     int N;
-    cout << "Enter number N: ";
-    cin >> N;
+    std::cout << "Enter number N: ";
+    std::cin >> N;
 
     int dozens = 10;
 
-    if (N >= 2) cout << "2 ";
+    if (N >= 2) std::cout << "2 ";
 
     for (int i = 3; i <= N; i += 2)
     {
@@ -35,12 +33,14 @@ int main()
         {
             if (i > dozens)
             {
-                cout << endl;
+                std::cout << "\n";
             }
 
-            cout << i << " ";
+            std::cout << i << " ";
             dozens = ((i / 10 + 1) * 10);
         }
     }
+
+    system("pause");
     return 0;
 }

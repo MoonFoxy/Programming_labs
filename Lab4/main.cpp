@@ -1,7 +1,5 @@
 #include <iostream>
 
-using namespace std;
-
 /*
   С клавиатуры вводится целочисленный массив из девяти элементов.
   Необходимо:
@@ -16,7 +14,7 @@ using namespace std;
 int main()
 {
     int input[9];
-    for (int i = 0; i < 9; i++) cin >> input[i];
+    for (int i = 0; i < 9; i++) std::cin >> input[i];
 
     int maxKey = 1;
     int maxSum;
@@ -42,19 +40,19 @@ int main()
         }
     }
 
-    cout << "(1): " << maxKey << endl;
+    std::cout << "(1): " << maxKey << "\n";
 
-    cout << "(2):";
+    std::cout << "(2):";
     for (int i = 2; i >= 0; i--)
     {
-        cout << " " << maxInThree[i];
+        std::cout << " " << maxInThree[i];
     }
-    // delete[] maxInThree;
-    cout << endl;
+
+    std::cout << "\n";
 
     bool flag = false;
     int nextNum;
-    cout << "(3):";
+    std::cout << "(3):";
     for (int i = 0; i < 9; i++)
     {
         if ((input[i] & (input[i] - 1) != 0) && (input[i] != 0))
@@ -65,7 +63,7 @@ int main()
 
         if (flag && (input[i] != nextNum)) break;
 
-        cout << " " << input[i];
+        std::cout << " " << input[i];
 
         if (!flag)
         {
@@ -73,7 +71,8 @@ int main()
             nextNum = input[i] * 2;
         }
     }
-    cout << endl;
+
+    std::cout << "\n";
 
     // Шейкер сортировка
     int left = 1;
@@ -83,27 +82,27 @@ int main()
         sorted = false;
         for (int i = left; i <= right; i++) {
             if (input[i - 1] > input[i]) {
-                swap(input[i - 1], input[i]);
+                std::swap(input[i - 1], input[i]);
                 sorted = true;
             }
         }
         right--;
         for (int i = right; i >= left; i--) {
             if (input[i - 1] > input[i]) {
-                swap(input[i - 1], input[i]);
+                std::swap(input[i - 1], input[i]);
                 sorted = true;
             }
         }
         left++;
     } while (sorted);
 
-    cout << "(4):";
+    std::cout << "(4):";
     for (int i = 0; i < 9; i++)
     {
-        cout << " " << input[i];
+        std::cout << " " << input[i];
     }
-    cout << endl;
+    std::cout << "\n";
 
-    // delete[] input;
+    system("pause");
     return 0;
 }

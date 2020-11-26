@@ -1,7 +1,5 @@
 #include <iostream>
 
-using namespace std;
-
 /*
   Задача: С клавиатуры вводится последовательность целых чисел признак окончания ввода - "0".
   Необходимо вывести на экран:
@@ -24,9 +22,9 @@ int main()
     int numberSum = 0;
     int positiveAmount = 0;
 
-    cout << "Enter numbers:\n";
+    std::cout << "Enter numbers:\n";
 
-    cin >> X;
+    std::cin >> X;
     minNumber = X;
 
     while (true)
@@ -46,13 +44,15 @@ int main()
         numberSum += X;
         numberAmount++;
 
-        cin >> X;
+        std::cin >> X;
     }
 
     int averageNumber = float(numberSum) / (numberAmount == 0) ? 1 : numberAmount;
 
-    cout << "Minimum number: " << minNumber << endl;
-    cout << "Average: " << averageNumber << endl;
-    cout << "Positive numbers: " << positiveAmount << endl;
+    std::cout << "Minimum number: " << minNumber << "\n";
+    std::cout << "Average: " << averageNumber << "\n";
+    std::cout << "Positive numbers: " << positiveAmount << "\n";
+
+    system("pause");
     return 0;
 }
