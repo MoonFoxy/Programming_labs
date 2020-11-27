@@ -29,23 +29,28 @@ int main()
     size_t keyLen = strlen(key);
 
     int matchCount = 0;
-    std::string keyReplaced;
-    for (int i = 0; text[i];)
+    char keyReplaced[textSize * 3] = { "" };
+    char mark[keySize + 2] = { "" };
+
+    std::strcat(mark, "\"");
+    std::strcat(mark, key);
+    std::strcat(mark, "\"");
+    for (int i = 0, j = 0; text[i];)
     {
         if (text[i] == key[0])
         {
             if (std::string(text).substr(i, keyLen) == key)
             {
-                keyReplaced += "\"";
-                keyReplaced += key;
-                keyReplaced += "\"";
+                std::strcat(keyReplaced, mark);
                 matchCount++;
                 i += keyLen;
+                j += keyLen + 2;
                 continue;
             }
         }
-        keyReplaced += text[i];
+        keyReplaced[j] = text[i];
         i++;
+        j++;
     }
 
     std::cout << "(1): " << key << " - " << matchCount << "\n";
