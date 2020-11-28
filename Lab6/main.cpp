@@ -77,7 +77,7 @@ int main()
 
     char charts[9] = " ,.-!?:;";
     char* delim = strtok(text, charts);
-    while (delim)
+    while (delim != NULL)
     {
         std::cout << "\t" << delim << ",\n";
         delim = strtok(NULL, charts);
