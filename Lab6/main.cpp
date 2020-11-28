@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cstring>
 
+#define TEXT_SIZE 80
+#define KEY_SIZE 10
+
 /*
   С клавиатуры вводится произвольная строка длиной не более 80 символов. Затем вводится ключ - подстрока, длиной не более 10 символов.
 
@@ -13,24 +16,21 @@
 
 int main()
 {
-    const int textSize = 80;
-    const int keySize = 10;
-
-    char text[textSize] = { "" };
-    char key[keySize] = { "" };
+    char text[TEXT_SIZE] = { "" };
+    char key[KEY_SIZE] = { "" };
 
     std::cout << "Enter text: ";
-    std::cin.getline(text, textSize);
+    std::cin.getline(text, TEXT_SIZE);
 
     std::cout << "Enter key: ";
-    std::cin.getline(key, keySize);
+    std::cin.getline(key, KEY_SIZE);
 
     size_t textLen = strlen(text);
     size_t keyLen = strlen(key);
 
     int matchCount = 0;
-    char keyReplaced[textSize * 3] = { "" };
-    char mark[keySize + 2] = { "" };
+    char keyReplaced[TEXT_SIZE * 3] = { "" };
+    char mark[KEY_SIZE + 2] = { "" };
 
     std::strcat(mark, "\"");
     std::strcat(mark, key);
