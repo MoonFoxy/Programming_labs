@@ -76,12 +76,11 @@ int main()
     std::cout << "(4):";
 
     char acCharts[9] = " ,.-!?:;";
-    char* pcNextToken = NULL;
-    char* pcToken = strtok_r(acText, acCharts, &pcNextToken);
+    char* pcToken = std::strtok(acText, acCharts);
     while (pcToken != NULL)
     {
         std::cout << "\t" << pcToken << ",\n";
-        pcToken = strtok_r(NULL, acCharts, &pcNextToken);
+        pcToken = std::strtok(NULL, acCharts);
     }
 
     return 0;
