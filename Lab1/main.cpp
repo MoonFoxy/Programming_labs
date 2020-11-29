@@ -9,15 +9,15 @@
 
 int main()
 {
-    float X, Y;
+    float fX = 0, fY = 0;
     while (true)
     {
-        std::cout << "Enter coordinates:\n";
-        std::cin >> X >> Y;
+        std::cout << "Enter coordinates: ";
+        std::cin >> fX >> fY;
 
-        if ((X == 0) && (Y == 0)) break;
+        if ((fX == 0) && (fY == 0)) break;
 
-        if ((X >= 2) && (X <= 6) && (Y <= X))
+        if ((fX >= 2) && (fX <= 6) && (fY <= fX))
         {
             std::cout << "Enters +\n";
         }
@@ -29,6 +29,5 @@ int main()
 
     std::cout << "Stopped!\n";
 
-    system("pause");
     return 0;
 }

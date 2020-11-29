@@ -11,50 +11,49 @@
 
 int main()
 {
-    unsigned long long array[MATRIX_SIZE][MATRIX_SIZE], temp[MATRIX_SIZE][MATRIX_SIZE];
+    unsigned long long aullArray[MATRIX_SIZE][MATRIX_SIZE], aullTemp[MATRIX_SIZE][MATRIX_SIZE];
 
     std::cout << "Enter numbers: ";
 
-    for (int i = 0; i < MATRIX_SIZE; i++)
+    for (int iI = 0; iI < MATRIX_SIZE; iI++)
     {
-        for (int j = 0; j < MATRIX_SIZE; j++)
+        for (int iJ = 0; iJ < MATRIX_SIZE; iJ++)
         {
-            std::cin >> array[i][j];
-            temp[i][j] = array[i][j];
+            std::cin >> aullArray[iI][iJ];
+            aullTemp[iI][iJ] = aullArray[iI][iJ];
         }
     }
 
-    int power;
+    int iPower;
 
     std::cout << "Enter power: ";
-    std::cin >> power;
+    std::cin >> iPower;
 
-    unsigned long long result[MATRIX_SIZE][MATRIX_SIZE] = { 0 };
+    unsigned long long aullResult[MATRIX_SIZE][MATRIX_SIZE] = { 0 };
 
-    for (int p = 1; p < power; p++)
+    for (int iP = 1; iP < iPower; iP++)
     {
-        for (int i = 0; i < MATRIX_SIZE; i++)
+        for (int iI = 0; iI < MATRIX_SIZE; iI++)
         {
-            for (int j = 0; j < MATRIX_SIZE; j++)
+            for (int iJ = 0; iJ < MATRIX_SIZE; iJ++)
             {
-                for (int k = 0; k < MATRIX_SIZE; k++)
+                for (int iK = 0; iK < MATRIX_SIZE; iK++)
                 {
-                    result[i][j] += array[k][j] * temp[i][k];
+                    aullResult[iI][iJ] += aullArray[iK][iJ] * aullTemp[iI][iK];
                 }
             }
         }
     }
 
-    for (int i = 0; i < MATRIX_SIZE; i++)
+    for (int iI = 0; iI < MATRIX_SIZE; iI++)
     {
-        for (int j = 0; j < MATRIX_SIZE; j++)
+        for (int iJ = 0; iJ < MATRIX_SIZE; iJ++)
         {
-            std::cout << result[i][j] << " ";
+            std::cout << aullResult[iI][iJ] << " ";
         }
 
         std::cout << "\n";
     }
 
-    system("pause");
     return 0;
 }

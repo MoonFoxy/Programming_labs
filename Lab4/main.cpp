@@ -13,96 +13,97 @@
 
 int main()
 {
-    int input[9];
-    for (int i = 0; i < 9; i++) std::cin >> input[i];
+    int aiInput[9];
 
-    int maxKey = 1;
-    int maxSum;
-    int maxInThree[3];
-    for (int i = 0; i < 3; i++)
+    std::cout << "Enter numbers: ";
+    for (int iI = 0; iI < 9; iI++) std::cin >> aiInput[iI];
+
+    int iMaxKey = 1;
+    int iMaxSum;
+    int aiMaxInThree[3];
+    for (int iI = 0; iI < 3; iI++)
     {
-        int sum = 0;
-        int key = i * 3;
-        maxInThree[i] = input[key];
-        for (int j = 0; j < 3; j++, key++)
+        int iSum = 0;
+        int iKey = iI * 3;
+        aiMaxInThree[iI] = aiInput[iKey];
+        for (int iJ = 0; iJ < 3; iJ++, iKey++)
         {
-            sum += input[key];
-            if (maxInThree[i] < input[key])
+            iSum += aiInput[iKey];
+            if (aiMaxInThree[iI] < aiInput[iKey])
             {
-                maxInThree[i] = input[key];
+                aiMaxInThree[iI] = aiInput[iKey];
             }
         }
 
-        if (i == 0 || maxSum < sum)
+        if (iI == 0 || iMaxSum < iSum)
         {
-            maxKey = i + 1;
-            maxSum = sum;
+            iMaxKey = iI + 1;
+            iMaxSum = iSum;
         }
     }
 
-    std::cout << "(1): " << maxKey << "\n";
+    std::cout << "(1): " << iMaxKey << "\n";
 
     std::cout << "(2):";
-    for (int i = 2; i >= 0; i--)
+    for (int iI = 2; iI >= 0; iI--)
     {
-        std::cout << " " << maxInThree[i];
+        std::cout << " " << aiMaxInThree[iI];
     }
 
     std::cout << "\n";
 
-    bool flag = false;
-    int nextNum;
+    bool bFlag = false;
+    int iNextNum;
     std::cout << "(3):";
-    for (int i = 0; i < 9; i++)
+    for (int iI = 0; iI < 9; iI++)
     {
-        if ((input[i] & (input[i] - 1) != 0) && (input[i] != 0))
+        if ((aiInput[iI] & (aiInput[iI] - 1) != 0) && (aiInput[iI] != 0))
         {
-            if (flag) break;
+            if (bFlag) break;
             continue;
         }
 
-        if (flag && (input[i] != nextNum)) break;
+        if (bFlag && (aiInput[iI] != iNextNum)) break;
 
-        std::cout << " " << input[i];
+        std::cout << " " << aiInput[iI];
 
-        if (!flag)
+        if (!bFlag)
         {
-            flag = true;
-            nextNum = input[i] * 2;
+            bFlag = true;
+            iNextNum = aiInput[iI] * 2;
         }
     }
 
     std::cout << "\n";
 
     // Шейкер сортировка
-    int left = 1;
-    int right = 9;
-    bool sorted = false;
+    int iLeft = 1;
+    int iRight = 9;
+    bool bSorted = false;
     do {
-        sorted = false;
-        for (int i = left; i <= right; i++) {
-            if (input[i - 1] > input[i]) {
-                std::swap(input[i - 1], input[i]);
-                sorted = true;
+        bSorted = false;
+        for (int iI = iLeft; iI <= iRight; iI++) {
+            if (aiInput[iI - 1] > aiInput[iI]) {
+                std::swap(aiInput[iI - 1], aiInput[iI]);
+                bSorted = true;
             }
         }
-        right--;
-        for (int i = right; i >= left; i--) {
-            if (input[i - 1] > input[i]) {
-                std::swap(input[i - 1], input[i]);
-                sorted = true;
+        iRight--;
+        for (int iI = iRight; iI >= iLeft; iI--) {
+            if (aiInput[iI - 1] > aiInput[iI]) {
+                std::swap(aiInput[iI - 1], aiInput[iI]);
+                bSorted = true;
             }
         }
-        left++;
-    } while (sorted);
+        iLeft++;
+    } while (bSorted);
 
     std::cout << "(4):";
-    for (int i = 0; i < 9; i++)
+    for (int iI = 0; iI < 9; iI++)
     {
-        std::cout << " " << input[i];
+        std::cout << " " << aiInput[iI];
     }
     std::cout << "\n";
 
-    system("pause");
     return 0;
 }

@@ -1,1 +1,10 @@
-*.exe
+# Ignore all files
+*
+
+# Not ignored files
+!.gitignore
+!*.cpp
+!*.png
+!*.drawio
+!.vscode
+!.vscode/*

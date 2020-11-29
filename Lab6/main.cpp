@@ -16,73 +16,73 @@
 
 int main()
 {
-    char text[TEXT_SIZE] = { "" };
-    char key[KEY_SIZE] = { "" };
+    char acText[TEXT_SIZE] = { "" };
+    char acKey[KEY_SIZE] = { "" };
 
     std::cout << "Enter text: ";
-    std::cin.getline(text, TEXT_SIZE);
+    std::cin.getline(acText, TEXT_SIZE);
 
     std::cout << "Enter key: ";
-    std::cin.getline(key, KEY_SIZE);
+    std::cin.getline(acKey, KEY_SIZE);
 
-    size_t textLen = strlen(text);
-    size_t keyLen = strlen(key);
+    size_t iTextLen = strlen(acText);
+    size_t iKeyLen = strlen(acKey);
 
-    int matchCount = 0;
-    char keyReplaced[TEXT_SIZE * 3] = { "" };
-    char mark[KEY_SIZE + 2] = { "" };
+    int iMatchCount = 0;
+    char acKeyReplaced[TEXT_SIZE * 3] = { "" };
+    char acMark[KEY_SIZE + 2] = { "" };
 
-    std::strcat(mark, "\"");
-    std::strcat(mark, key);
-    std::strcat(mark, "\"");
-    for (int i = 0, j = 0; text[i];)
+    std::strcat(acMark, "\"");
+    std::strcat(acMark, acKey);
+    std::strcat(acMark, "\"");
+    for (int iI = 0, iJ = 0; acText[iI];)
     {
-        if (text[i] == key[0])
+        if (acText[iI] == acKey[0])
         {
-            if (std::string(text).substr(i, keyLen) == key)
+            if (std::string(acText).substr(iI, iKeyLen) == acKey)
             {
-                std::strcat(keyReplaced, mark);
-                matchCount++;
-                i += keyLen;
-                j += keyLen + 2;
+                std::strcat(acKeyReplaced, acMark);
+                iMatchCount++;
+                iI += iKeyLen;
+                iJ += iKeyLen + 2;
                 continue;
             }
         }
-        keyReplaced[j] = text[i];
-        i++;
-        j++;
+        acKeyReplaced[iJ] = acText[iI];
+        iI++;
+        iJ++;
     }
 
-    std::cout << "(1): " << key << " - " << matchCount << "\n";
-    std::cout << "(2): " << keyReplaced << "\n";
+    std::cout << "(1): " << acKey << " - " << iMatchCount << "\n";
+    std::cout << "(2): " << acKeyReplaced << "\n";
 
-    int maxCount = 0;
-    char maxChar;
-    for (int i = 0; i < textLen; i++)
+    int iMaxCount = 0;
+    char cMaxChar;
+    for (int iI = 0; iI < iTextLen; iI++)
     {
         int count = 0;
-        for (int j = i; j < textLen; j++)
+        for (int iJ = iI; iJ < iTextLen; iJ++)
         {
-            if (text[i] == text[j]) count++;
+            if (acText[iI] == acText[iJ]) count++;
         }
-        if (count > maxCount)
+        if (count > iMaxCount)
         {
-            maxCount = count;
-            maxChar = text[i];
+            iMaxCount = count;
+            cMaxChar = acText[iI];
         }
     }
 
-    std::cout << "(3): " << maxChar << " - " << maxCount << "\n";
+    std::cout << "(3): " << cMaxChar << " - " << iMaxCount << "\n";
     std::cout << "(4):";
 
-    char charts[9] = " ,.-!?:;";
-    char* delim = strtok(text, charts);
-    while (delim != NULL)
+    char acCharts[9] = " ,.-!?:;";
+    char* pcNextToken = NULL;
+    char* pcToken = strtok_r(acText, acCharts, &pcNextToken);
+    while (pcToken != NULL)
     {
-        std::cout << "\t" << delim << ",\n";
-        delim = strtok(NULL, charts);
+        std::cout << "\t" << pcToken << ",\n";
+        pcToken = strtok_r(NULL, acCharts, &pcNextToken);
     }
 
-    system("pause");
     return 0;
 }

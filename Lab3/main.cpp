@@ -9,38 +9,35 @@
 
 int main()
 {
-    int N;
+    int iN = 0, iDozens = 10;
     std::cout << "Enter number N: ";
-    std::cin >> N;
+    std::cin >> iN;
 
-    int dozens = 10;
+    if (iN >= 2) std::cout << "2 ";
 
-    if (N >= 2) std::cout << "2 ";
-
-    for (int i = 3; i <= N; i += 2)
+    for (int iI = 3; iI <= iN; iI += 2)
     {
-        bool prime = false;
-        for (int j = 3; j * j <= i; j += 2)
+        bool bPrime = false;
+        for (int iJ = 3; iJ * iJ <= iI; iJ += 2)
         {
-            if ((i % j) == 0)
+            if ((iI % iJ) == 0)
             {
-                prime = true;
+                bPrime = true;
                 break;
             }
         }
 
-        if (prime)
+        if (bPrime)
         {
-            if (i > dozens)
+            if (iI > iDozens)
             {
                 std::cout << "\n";
             }
 
-            std::cout << i << " ";
-            dozens = ((i / 10 + 1) * 10);
+            std::cout << iI << " ";
+            iDozens = ((iI / 10 + 1) * 10);
         }
     }
 
-    system("pause");
     return 0;
 }

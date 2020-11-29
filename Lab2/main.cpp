@@ -16,43 +16,38 @@
 
 int main()
 {
-    int X;
-    int minNumber;
-    int numberAmount = 0;
-    int numberSum = 0;
-    int positiveAmount = 0;
+    int iX = 0, iMinNumber = 0, iNumberAmount = 0, iNumberSum = 0, iPositiveAmount = 0;
 
-    std::cout << "Enter numbers:\n";
+    std::cout << "Enter numbers: ";
 
-    std::cin >> X;
-    minNumber = X;
+    std::cin >> iX;
+    iMinNumber = iX;
 
     while (true)
     {
-        if (X == 0) break;
+        if (iX == 0) break;
 
-        if (X <= minNumber)
+        if (iX <= iMinNumber)
         {
-            minNumber = X;
+            iMinNumber = iX;
         }
 
-        if (X > 0)
+        if (iX > 0)
         {
-            positiveAmount++;
+            iPositiveAmount++;
         }
 
-        numberSum += X;
-        numberAmount++;
+        iNumberSum += iX;
+        iNumberAmount++;
 
-        std::cin >> X;
+        std::cin >> iX;
     }
 
-    int averageNumber = float(numberSum) / (numberAmount == 0) ? 1 : numberAmount;
+    int iAverageNumber = float(iNumberSum) / ((iNumberAmount == 0) ? 1 : iNumberAmount);
 
-    std::cout << "Minimum number: " << minNumber << "\n";
-    std::cout << "Average: " << averageNumber << "\n";
-    std::cout << "Positive numbers: " << positiveAmount << "\n";
+    std::cout << "Minimum number: " << iMinNumber << "\n";
+    std::cout << "Average: " << iAverageNumber << "\n";
+    std::cout << "Positive numbers: " << iPositiveAmount << "\n";
 
-    system("pause");
     return 0;
 }
