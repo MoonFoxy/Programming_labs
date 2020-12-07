@@ -9,7 +9,7 @@
   2) разработать и реализовать алгоритмы обработки базы данных, предусмотренные персональным заданием.
 */
 
-#include <iostream> // Для Консольного вывода/ввода
+#include <iostream> // Для Консольного ввода/вывода
 #include <cstring> // Для функции memcpy()
 #include <unistd.h> // Для функции sleep()
 
@@ -52,24 +52,26 @@ int ABCToInt(int iLetter)
     return iLetter;
 }
 
-int getSingleIndex(int iRow, int iColumn, int iSize)
-{
-    return (iRow * iSize) + iColumn;
-}
-
 /**
  * Создает матрицу Size на Size все эллементы которой равны 0
  *
  * @param iSize Размер матрицы Size на Size
  * @return Готовая матрица все элементы которой равны 0
  */
-int* createMatrix(int iSize)
+int** createMatrix(int iSize)
 {
-    int iSizeSquare = iSize * iSize;
-    int* aiMatrix = new int [iSizeSquare];
-    for (int iI = 0; iI < iSizeSquare; iI++)
+    int** aiMatrix = new int* [iSize];
+    for (int iI = 0; iI < iSize; iI++)
     {
-        aiMatrix[iI] = 0;
+        aiMatrix[iI] = new int [iSize];
+    }
+
+    for (int iI = 0; iI < iSize; iI++)
+    {
+        for (int iJ = 0; iJ < iSize; iJ++)
+        {
+            aiMatrix[iI][iJ] = 0;
+        }
     }
     return aiMatrix;
 }
@@ -79,53 +81,67 @@ int* createMatrixFromTXT()
 
 }
 
-void resizeMatrix(int* aiMatrix, int iSize, int iNewSize)
+void resizeMatrix(int** &aiMatrix, int &iSize, int iNewSize)
 {
-    int iSizeSquare = iSize * iSize;
-    int iNewSizeSquare = iNewSize * iNewSize;
     int iBias = iNewSize - iSize;
     if (iBias == 0) return;
-    int* aiTemp = new int [iNewSizeSquare];
+    int** aiTemp = new int* [iNewSize];
 
-    memcpy(aiTemp, aiMatrix, iSizeSquare * sizeof(int));
-    iSize = iNewSize;
+    for (int iI = 0; iI < iNewSize; iI++)
+        aiTemp[iI] = new int [iNewSize];
+
+    for (int iI = 0; iI < iSize; iI++)
+    {
+        memcpy(aiTemp[iI], aiMatrix[iI], iSize * sizeof(int));
+        delete[] aiMatrix[iI];
+        aiMatrix[iI] = aiTemp[iI];
+    }
     delete[] aiMatrix;
     aiMatrix = aiTemp;
 
-    if (iBias > 0) {
-        for (int iI = iSizeSquare; iI < iNewSizeSquare; iI++)
-        {
-            aiMatrix[iI] = 0;
-        }
+    if (iBias > 0)
+    {
+        for (int iI = iSize + 1; iI < iNewSize; iI++)
+            for (int j = iSize + 1; j < iNewSize; j++)
+                aiMatrix[iI][j] = 0;
     }
+
+    iSize = iNewSize;
 }
 
-void deleteMatrix(int** aiMatrix)
+void deleteMatrix(int*** aiMatrix, int* aiSizeMatrix)
 {
     for (int iI = 0; iI < MATRIX_COUNT; ++iI)
     {
+        int iSize = aiSizeMatrix[iI];
+        for (int iJ = 0; iJ < iSize; ++iJ)
+        {
+            delete[] aiMatrix[iI][iJ];
+        }
         delete[] aiMatrix[iI];
     }
     delete[] aiMatrix;
 }
 
-void fillRandomMatrix(int* aiMatrix, int iSize)
+void fillRandomMatrix(int** aiMatrix, int iSize)
 {
-    int iSizeSquare = iSize * iSize;
-    for (int iI = 0; iI < iSizeSquare; iI++)
+    for (int iI = 0; iI < iSize; iI++)
     {
-        aiMatrix[iI] = rand() % 10;
+        for (int iJ = 0; iJ < iSize; iJ++)
+        {
+            aiMatrix[iI][iJ] = rand() % 10;
+        }
     }
 }
 
-void printMatrix(int* aiMatrix, int iSize)
+void printMatrix(int** aiMatrix, int iSize)
 {
     for (int iI = 0; iI < iSize; iI++)
     {
         std::cout << '\t';
         for (int iJ = 0; iJ < iSize; iJ++)
         {
-            std::cout << " " << aiMatrix[getSingleIndex(iI, iJ, iSize)];
+            std::cout << " " << aiMatrix[iI][iJ];
         }
         std::cout << std::endl;
     }
@@ -148,7 +164,7 @@ int inputMatrixSize(char letter)
     return iSizeMatrix;
 }
 
-int selectMatrix(int** aiMatrix)
+int selectMatrix()
 {
     while (true)
     {
@@ -179,7 +195,7 @@ int selectMatrix(int** aiMatrix)
     }
 }
 
-bool start(int** aiMatrix, int* iSizeMatrix)
+bool start(int*** aiMatrix, int* aiSizeMatrix)
 {
     while (true)
     {
@@ -220,7 +236,7 @@ bool start(int** aiMatrix, int* iSizeMatrix)
     }
 }
 
-void menu(int** aiMatrix, int* iSizeMatrix)
+void menu(int*** aiMatrix, int* aiSizeMatrix)
 {
     while (true)
     {
@@ -251,10 +267,14 @@ void menu(int** aiMatrix, int* iSizeMatrix)
             }
             case 1:
             {
-                int aiSelectedMatrix = selectMatrix(aiMatrix);
+                int aiSelectedMatrix = selectMatrix();
                 if (aiSelectedMatrix == -1) continue;
-                fillRandomMatrix(aiMatrix[aiSelectedMatrix], iSizeMatrix[aiSelectedMatrix]);
-                printMatrix(aiMatrix[aiSelectedMatrix], iSizeMatrix[aiSelectedMatrix]);
+                fillRandomMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
+                printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
+                sleep(2);
+                resizeMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix], 30);
+                printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
+                sleep(2);
                 continue;
             }
             default:
@@ -275,30 +295,30 @@ void title()
     std::cout << "\tManagement in technical systems                         " << std::endl;
     std::cout << "\tGroup: 0391                                             " << RESET_CL << std::endl;
 
-    sleep(5);
+    sleep(3);
 }
 
 int main()
 {
-    int** aiMatrix = new int* [MATRIX_COUNT];
-    int iSizeMatrix[MATRIX_COUNT] = { 0 };
+    int*** aiMatrix = new int** [MATRIX_COUNT];
+    int aiSizeMatrix[MATRIX_COUNT] = { 0 };
 
     title();
-    bool flag = start(aiMatrix, iSizeMatrix);
+    bool flag = start(aiMatrix, aiSizeMatrix);
     if (flag)
     {
         for (int iI = 0; iI < MATRIX_COUNT; iI++)
         {
-            int iSize = (iSizeMatrix[iI] = inputMatrixSize(iI + 65)); // 65 = A ( int в ASCII )
+            int iSize = (aiSizeMatrix[iI] = inputMatrixSize(iI + 65)); // 65 = A ( int в ASCII )
             aiMatrix[iI] = createMatrix(iSize);
             printMatrix(aiMatrix[iI], iSize);
         }
 
-        menu(aiMatrix, iSizeMatrix);
+        menu(aiMatrix, aiSizeMatrix);
     }
 
 
     std::cout << std::endl << EXIT_CL << "\t\tExit the programm" << RESET_CL << std::endl;
-    deleteMatrix(aiMatrix);
+    deleteMatrix(aiMatrix, aiSizeMatrix);
     return 0;
 }
