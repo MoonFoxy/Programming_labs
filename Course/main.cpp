@@ -1,12 +1,24 @@
 /*
-  Программа должна оперировать тремя квадратными матрицами (А, В и С), размерность которых задается (или определяется) на фазе работы программы.
+ЗАДАНИЕ НА КУРСОВОЙ ПРОЕКТ
 
-  Необходимо:
-    1) реализовать динамические структуры данных и алгоритмы их обработки, позволяющие поддерживать выполнение следующих функций:
-      - консольный ввод/вывод данных о матрицах А, В и С;
-      - файловый ввод/вывод данных о матрицах А, В и С;
-      - интерактивное редактирование элементов матриц;
-    2) разработать и реализовать алгоритмы обработки базы данных, предусмотренные персональным заданием.
+  Общая часть задания:
+    Программа должна оперировать тремя квадратными матрицами (А, В и С), размерность которых задается (или определяется) на фазе работы программы.
+
+    Необходимо:
+      1) реализовать динамические структуры данных и алгоритмы их обработки, позволяющие поддерживать выполнение следующих функций:
+        - консольный ввод/вывод данных о матрицах А, В и С;
+        - файловый ввод/вывод данных о матрицах А, В и С;
+        - интерактивное редактирование элементов матриц;
+      2) разработать и реализовать алгоритмы обработки базы данных, предусмотренные персональным заданием.
+
+  Примеры персональных заданий:
+    4) Скопировать в матрицу С те элементы матрицы А, которые более одного раза встречаются в матрице В.
+    14) Вывести на экран те элементы матрицы С, которые равны сумме соответствующих элементов матриц А и В.
+
+  Общие требования к программам:
+    1) Программа должна поддерживать систему меню, пункты которых соответствуют выполнению функций, предусмотренных заданием.
+    2) Тексты программ должны содержать комментарии, объясняющие назначение основных функций, типов и объектов данных, функциональных блоков и т.п.
+    3) Представляемые тексты программ должны обеспечивать возможность их компиляции и построения в среде MS Visual Studio.
 */
 
 #include <iostream> // Для Консольного ввода/вывода
@@ -26,6 +38,27 @@
 #define WARN_CL "\x1b[30m\x1b[43m"
 #define EXIT_CL "\x1b[30m\x1b[41m"
 #define RESET_CL "\x1b[0m"
+
+
+/**
+ * Выводит матрицу в консоль
+ *
+ * @param aiMatrix Выводимая матрица
+ * @param iSize Размер матрицы
+ */
+void printMatrix(int** aiMatrix, int iSize)
+{
+    for (int iI = 0; iI < iSize; iI++)
+    {
+        std::cout << TITLE_CL <<'\t';
+        for (int iJ = 0; iJ < iSize; iJ++)
+        {
+            std::cout << " " << aiMatrix[iI][iJ];
+        }
+        std::cout << RESET_CL << std::endl;
+    }
+    std::cout << std::endl;
+}
 
 /**
  * Создает матрицу Size на Size все эллементы которой равны 0
@@ -62,17 +95,17 @@ void updateMatrixValues(int** aiMatrix, int iSize)
         std::cout << std::endl;
         std::cout << LOG_CL << "\t[ X, Y, Value ]" << RESET_CL << " - Enter X, Y, Value parameters separated by a space" << std::endl << "\t\tto change a specific value in the matrix" << std::endl;
         std::cout << std::endl;
-        std::cout << EXIT_CL << "\t[ -1 ]" << RESET_CL << " - Enter -1 in X and Y to go back" << std::endl;
+        std::cout << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Enter 0 in X and Y to go back" << std::endl;
         std::cout << std::endl;
-        std::cout << LOG_CL << "\t[ X,  Y,  Value ]" << RESET_CL << std::endl;
+        std::cout << LOG_CL << "\t\t[ X,  Y,  Value ]" << RESET_CL << std::endl;
         std::cout << "Enter answer: " << TITLE_CL;
 
         int iX = -1, iY = -1, iValue = 0;
         std::cin >> iX >> iY >> iValue;
+        if (iX == 0 && iY == 0) return;
 
         std::cout << RESET_CL;
 
-        if (iX < 0 && iY < 0) return;
         if (iX > iSize || iY > iSize || iX < 0 || iY < 0)
         {
             std::cout << CLEAR;
@@ -80,37 +113,32 @@ void updateMatrixValues(int** aiMatrix, int iSize)
         }
         else
         {
-            aiMatrix[iX][iY] = iValue;
+            aiMatrix[iY - 1][iX - 1] = iValue;
             std::cout << CLEAR;
         }
     }
 }
 
 /**
- * Description
+ * Создает матрицы из заполненного заранее файла .TXT
  *
- * @param Param1 None
- * @param Param2 None
+ * @return Созданные матрицы с файла
  */
-/*
-int** createMatrixFromTXT()
+int*** createMatrixFromTXT()    // TODO: Заполнение матриц с .TXT файла
 {
-    // TODO: Заполнение матриц с .TXT файла
+
 }
-*/
 
 /**
- * Description
+ * Обновляет значение матриц из заполненного заранее файла .TXT
  *
- * @param Param1 None
- * @param Param2 None
+ * @param aiMatrix Трёхмернаая матрица
+ * @param aiSizeMatrix Массив с размерами вложенных матриц
  */
-/*
-void updateMatrixFromTXT()
+void updateMatrixFromTXT(int*** aiMatrix, int* aiSizeMatrix)    // TODO: Заполнение матриц с .TXT файла
 {
-    // TODO: Заполнение матриц с .TXT файла
+
 }
-*/
 
 /**
  * Заполняет матрицу рандомными числами ( 0 - 10 )
@@ -206,37 +234,41 @@ void deleteMatrix(int*** aiMatrix, int* aiSizeMatrix)
 }
 
 /**
- * Выводит матрицу в консоль
+ * Перезаписывает файл .TXT матрицами программы
  *
- * @param aiMatrix Выводимая матрица
- * @param iSize Размер матрицы
+ * @param aiMatrix Трёхмернаая матрица
+ * @param aiSizeMatrix Массив с размерами вложенных матриц
  */
-void printMatrix(int** aiMatrix, int iSize)
+void printMatrixInTXT(int*** aiMatrix, int* aiSizeMatrix)     // TODO: Заполнение матриц с .TXT файла
 {
-    for (int iI = 0; iI < iSize; iI++)
-    {
-        std::cout << TITLE_CL <<'\t';
-        for (int iJ = 0; iJ < iSize; iJ++)
-        {
-            std::cout << " " << aiMatrix[iI][iJ];
-        }
-        std::cout << RESET_CL << std::endl;
-    }
-    std::cout << std::endl;
+
 }
 
 /**
- * Description
+ * [ Персональное задание номер 4 ]:
+ * Скопировать в матрицу С те элементы матрицы А, которые более одного раза встречаются в матрице В
  *
+ * // FIXME: Исправить параметры
  * @param Param1 None
  * @param Param2 None
  */
-/*
-void printMatrixInTXT()
+void task4()    // TODO: Дополнительное задание 4 в курсовой работе
 {
-    // TODO: Заполнение матриц с .TXT файла
+
 }
-*/
+
+/**
+ * [ Персональное задание номер 14 ]:
+ * Вывести на экран те элементы матрицы С, которые равны сумме соответствующих элементов матриц А и В
+ *
+ * // FIXME: Исправить параметры
+ * @param Param1 None
+ * @param Param2 None
+ */
+void task14()   // TODO: Дополнительное задание 14 в курсовой работе
+{
+
+}
 
 /**
  * Перводит буквы алфавита в номер их порядка
@@ -373,12 +405,12 @@ bool start(int*** aiMatrix, int* aiSizeMatrix)
 
         switch (iAnswer)
         {
-            case 0:
+            case 0:     // Выход из программы
             {
                 return false;
             }
 
-            case 1:
+            case 1:     // Заполнение матрицы нулями
             {
                 int aiSelectedMatrix = selectMatrix(true, aiSizeMatrix);
                 if (aiSelectedMatrix == -1) continue;
@@ -394,7 +426,7 @@ bool start(int*** aiMatrix, int* aiSizeMatrix)
                 continue;
             }
 
-            case 2:
+            case 2:     // Заполнение матрицы рандомом
             {
                 int aiSelectedMatrix = selectMatrix(true, aiSizeMatrix);
                 if (aiSelectedMatrix == -1) continue;
@@ -410,20 +442,18 @@ bool start(int*** aiMatrix, int* aiSizeMatrix)
                 continue;
             }
 
-            case 3:
+            case 3:     // TODO: Заполнение матриц с .TXT файла
             {
-                // TODO: Заполнение матриц с .TXT файла
-
                 continue;
             }
 
-            case 4:
+            case 4:     // Переход в { Основная стадия }
             {
                 if (!bFlag) continue;
                 return true;
             }
 
-            default:
+            default:       // Заного печатать меню
             {
                 continue;
             }
@@ -467,12 +497,12 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
 
         switch (iAnswer)
         {
-            case 0:
+            case 0:     // Выход из программы
             {
                 return;
             }
 
-            case 1:
+            case 1:     // Ручной ввод с консоли в матрицу
             {
                 int aiSelectedMatrix = selectMatrix(false);
                 if (aiSelectedMatrix == -1) continue;
@@ -486,7 +516,7 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
                 continue;
             }
 
-            case 3:
+            case 3:     // Заполнение матрицы нулями
             {
                 int aiSelectedMatrix = selectMatrix(false);
                 if (aiSelectedMatrix == -1) continue;
@@ -503,7 +533,7 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
                 continue;
             }
 
-            case 4:
+            case 4:     // Заполнение матрицы рандомом
             {
                 int aiSelectedMatrix = selectMatrix(false);
                 if (aiSelectedMatrix == -1) continue;
@@ -520,7 +550,7 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
                 continue;
             }
 
-            case 5:
+            case 5:     // Изменение размера матрицы
             {
                 int aiSelectedMatrix = selectMatrix(false);
                 if (aiSelectedMatrix == -1) continue;
@@ -538,7 +568,7 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
                 continue;
             }
 
-            case 6:
+            case 6:     // Вывод матрицы в консоль
             {
                 int aiSelectedMatrix = selectMatrix(false);
                 if (aiSelectedMatrix == -1) continue;
@@ -556,15 +586,17 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
 
             case 8:     // TODO: Дополнительное задание 4 в курсовой работе
             {
+                // task4();
                 continue;
             }
 
             case 9:     // TODO: Дополнительное задание 14 в курсовой работе
             {
+                // task14();
                 continue;
             }
 
-            default:
+            default:    // Заного напечатать меню
             {
                 continue;
             }
@@ -616,6 +648,7 @@ void title()
     std::cout << CLEAR;
     std::cout << SUCCESS_CL << "\t\t\"Coursework on PROGRAMMING\" No. 1" << TITLE_CL << std::endl;
     std::cout << "\tAuthor: Ilya Balakirev aka. MoonFoxy                    " << std::endl;
+    std::cout << "\tGitHub: https://github.com/MoonFoxy/                    " << std::endl;
     std::cout << "\tFirst course                                            " << std::endl;
     std::cout << "\tFaculty of Computer Technology and Informatics          " << std::endl;
     std::cout << "\tManagement in technical systems                         " << std::endl;
