@@ -154,52 +154,6 @@ void updateMatrixValues(int** aiMatrix, int iSize)
 }
 
 /**
- * Создает матрицы из заполненного заранее файла .TXT
- *
- * @param aiMatrix Заполняемая трехмерная матрица
- * @param aiSizeMatrix Массив с размерами матриц
- * @return Показатель успешного завершения
- */
-bool createMatrixFromTXT(int*** aiMatrix, int* aiSizeMatrix)    // TODO: Заполнение матриц с .TXT файла
-{
-    std::ifstream matrix;
-    matrix.open(TEXT_FILE);
-    if (!matrix.is_open() || matrix.eof())
-        return false;
-
-    while (!matrix.eof())
-    {
-        int iMatrix = 0;
-        int iSize = 0;
-        matrix >> iMatrix >> iSize;
-        iMatrix = ABCToInt(iMatrix);
-        aiSizeMatrix[iMatrix] = iSize;
-        aiMatrix[iMatrix] = createMatrix(iSize);
-
-        for (int iI = 0; iI < iSize; iI++)
-        {
-            for (int iJ = 0; iJ < iSize; iJ++)
-            {
-                matrix >> aiMatrix[iMatrix][iI][iJ];
-            }
-        }
-    }
-    matrix.close();
-    return true;
-}
-
-/**
- * Обновляет значение матриц из заполненного заранее файла .TXT
- *
- * @param aiMatrix Трёхмернаая матрица
- * @param aiSizeMatrix Массив с размерами вложенных матриц
- */
-void updateMatrixFromTXT(int*** aiMatrix, int* aiSizeMatrix)    // TODO: Заполнение матриц с .TXT файла
-{
-
-}
-
-/**
  * Заполняет матрицу рандомными числами ( 0 - 10 )
  *
  * @param aiMatrix Изменяемая матрица
@@ -247,7 +201,7 @@ void resizeMatrix(int** &aiMatrix, int &iSize, int iNewSize)
     int** aiTemp = createMatrix(iNewSize);
 
     int iSelected = ((iBias > 0) ? iSize : iNewSize);
-    for (int iI = 0; iI < iSize; iI++)
+    for (int iI = iSize; iI > 0; iI--)
     {
         for (int iJ = 0; iI < iSelected && iJ < iSelected; iJ++)
         {
@@ -280,10 +234,10 @@ void resizeMatrix(int** &aiMatrix, int &iSize, int iNewSize)
  */
 void deleteMatrix(int*** aiMatrix, int* aiSizeMatrix)
 {
-    for (int iI = 0; iI < MATRIX_COUNT; ++iI)
+    for (int iI = MATRIX_COUNT; iI > 0; iI--)
     {
         int iSize = aiSizeMatrix[iI];
-        for (int iJ = 0; iJ < iSize; ++iJ)
+        for (int iJ = iSize; iJ > 0; iJ--)
         {
             delete[] aiMatrix[iI][iJ];
         }
@@ -297,13 +251,21 @@ void deleteMatrix(int*** aiMatrix, int* aiSizeMatrix)
  *
  * @param aiMatrix Трёхмернаая матрица
  * @param aiSizeMatrix Массив с размерами вложенных матриц
+ * @return Показатель успешного завершения
  */
-void printMatrixInTXT(int*** aiMatrix, int* aiSizeMatrix)
+bool printMatrixInTXT(int*** aiMatrix, int* aiSizeMatrix)
 {
     std::ofstream matrix;
-    matrix.open(TEXT_FILE, std::ios::trunc);
+    matrix.open(TEXT_FILE);
+
+    if (!matrix.is_open())
+        return false;
+
     for (int iI = 0; iI < MATRIX_COUNT; iI++)
     {
+        if (matrix.fail())
+            return false;
+
         int iSize = aiSizeMatrix[iI];
         matrix << char(iI + 65) << ' ' << iSize << std::endl;
         for (int iJ = 0; iJ < iSize; iJ++)
@@ -317,6 +279,62 @@ void printMatrixInTXT(int*** aiMatrix, int* aiSizeMatrix)
         matrix << std::endl << std::endl;
     }
     matrix.close();
+    return true;
+}
+
+/**
+ * Создает матрицы из заполненного заранее файла .TXT
+ *
+ * @param aiMatrix Заполняемая трехмерная матрица
+ * @param aiSizeMatrix Массив с размерами матриц
+ * @return Показатель успешного завершения
+ */
+bool createMatrixFromTXT(int ***aiMatrix, int *aiSizeMatrix) // FIXME: Заполнение матриц с .TXT файла
+{
+    std::ifstream matrix;
+    matrix.open(TEXT_FILE);
+    if (!matrix.is_open())
+        return false;
+
+    while (matrix.good())
+    {
+        if (matrix.eof())
+            break;
+
+        if (matrix.fail())
+        {
+            deleteMatrix(aiMatrix, aiSizeMatrix);
+            return false;
+        }
+
+        int iMatrix = 0;
+        int iSize = 0;
+        matrix >> iMatrix >> iSize;
+        iMatrix = ABCToInt(iMatrix);
+        aiSizeMatrix[iMatrix] = iSize;
+        aiMatrix[iMatrix] = createMatrix(iSize);
+
+        for (int iI = 0; iI < iSize; iI++)
+        {
+            for (int iJ = 0; iJ < iSize; iJ++)
+            {
+                matrix >> aiMatrix[iMatrix][iI][iJ];
+            }
+        }
+    }
+    matrix.close();
+    return true;
+}
+
+/**
+ * Обновляет значение матриц из заполненного заранее файла .TXT
+ *
+ * @param aiMatrix Трёхмернаая матрица
+ * @param aiSizeMatrix Массив с размерами вложенных матриц
+ */
+void updateMatrixFromTXT(int ***aiMatrix, int *aiSizeMatrix) // TODO: Заполнение матриц с .TXT файла
+{
+
 }
 
 /**
@@ -503,8 +521,8 @@ bool start(int*** aiMatrix, int* aiSizeMatrix)
 
             case 3:     // Заполнение матриц программы из .TXT файла
             {
-                bool bSuccessful = createMatrixFromTXT(aiMatrix, aiSizeMatrix);
-                if (bSuccessful)
+                bool bSuccess = createMatrixFromTXT(aiMatrix, aiSizeMatrix);
+                if (bSuccess)
                 {
                     std::cout << SUCCESS_CL << "Reading matrices from the " << TEXT_FILE << " file was successful!" << RESET_CL << std::endl;
                 }
@@ -653,8 +671,15 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
 
             case 7:     // Заполнение .TXT файла матрицами из программы
             {
-                printMatrixInTXT(aiMatrix, aiSizeMatrix);
-                std::cout << SUCCESS_CL << "Writing matrices to the " << TEXT_FILE << " file was successful!" << RESET_CL << std::endl;
+                bool bSuccess = printMatrixInTXT(aiMatrix, aiSizeMatrix);
+                if (bSuccess)
+                {
+                    std::cout << SUCCESS_CL << "Writing matrices to the " << TEXT_FILE << " file was successful!" << RESET_CL << std::endl;
+                }
+                else
+                {
+                    std::cout << WARN_CL << "Writing matrices from the file " << TEXT_FILE << " failed!" << RESET_CL << std::endl;
+                }
                 sleep(3 * DELAY);
                 continue;
             }
