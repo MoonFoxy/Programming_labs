@@ -21,25 +21,26 @@
     3) Представляемые тексты программ должны обеспечивать возможность их компиляции и построения в среде MS Visual Studio.
 */
 
-#include <iostream>     // Для Консольного ввода/вывода
-#include <fstream>      // Для Файлового ввода/вывода
-#include <cstring>      // Для функции memcpy()
+#include <iostream> // Для Консольного ввода/вывода
+#include <fstream>  // Для Файлового ввода/вывода
+#include <cstring>  // Для функции memcmp
 
 // Кросплатформенность
 #ifdef _WIN32
-    #include <windows.h>    // Для функции Sleep()
-    #define sleep Sleep
-    #define DELAY 100
+#include <windows.h> // Для функции Sleep()
+#define wait Sleep
+#define DELAY 1000
 #else
-    #include <unistd.h>     // Для функции sleep()
-    #define DELAY 1
+#include <unistd.h> // Для функции sleep()
+#define wait usleep
+#define DELAY 1000000
 #endif
 
 // Количество создаваемых матриц
 #define MATRIX_COUNT 3
 
-// Файл для записи и чтения данных
-#define TEXT_FILE "./file.txt"
+// Файл для записи и чтения данных ( Полный путь до файла )
+#define TEXT_FILE "./Course/file.txt"
 
 // Очистка консоли
 #define CLEAR "\x1B[2J\x1B[H"
@@ -53,6 +54,53 @@
 #define RESET_CL "\x1b[0m"
 
 /**
+ * Полностью удаляет матрицу
+ *
+ * @param aiMatrix Матрица
+ * @param iSize Размер матрицы
+ */
+void deleteMatrix(int **aiMatrix, int iSize)
+{
+    for (int iI = 0; iI < iSize; iI++)
+    {
+        if (!(memcmp(aiMatrix[iI], "exit", 4) == 0))
+            break;
+
+        delete[] aiMatrix[iI];
+    }
+
+    delete[] aiMatrix;
+}
+
+/**
+ * Полностью удаляет трёхмерную матрицу
+ *
+ * @param aiMatrix Трёхмернаая матрица
+ * @param aiSizeMatrix Массив с размерами вложенных матриц
+ */
+void deleteAllMatrix(int ***aiMatrix, int *aiSizeMatrix)
+{
+    for (int iI = 0; iI < MATRIX_COUNT; iI++)
+    {
+        if (!(memcmp(aiMatrix, "exit", 4) == 0))
+            break;
+
+        int iSize = aiSizeMatrix[iI];
+        for (int iJ = 0; iJ < iSize; iJ++)
+        {
+            if (!(memcmp(aiMatrix[iI], "exit", 4) == 0))
+                break;
+
+            delete[] aiMatrix[iI][iJ];
+        }
+
+        delete[] aiMatrix[iI];
+    }
+
+    delete[] aiMatrix;
+}
+
+/**
  * Выводит матрицу в консоль
  *
  * @param aiMatrix Выводимая матрица
@@ -62,13 +110,13 @@ void printMatrix(int **aiMatrix, int iSize)
 {
     for (int iI = 0; iI < iSize; iI++)
     {
-        std::cout << TITLE_CL <<'\t';
+        std::cout << TITLE_CL << '\t';
         for (int iJ = 0; iJ < iSize; iJ++)
-        {
             std::cout << ' ' << aiMatrix[iI][iJ];
-        }
+
         std::cout << RESET_CL << std::endl;
     }
+
     std::cout << std::endl;
 }
 
@@ -82,14 +130,19 @@ int ABCToInt(int iLetter)
 {
     if (iLetter > 122)
         return -1;
+
     if (iLetter >= 97 && iLetter <= 122)
         iLetter -= 32;
+
     if (iLetter >= 65 && iLetter <= 90)
         iLetter -= 64;
+
     if (iLetter <= 57)
         iLetter -= 48;
+
     if (iLetter < 0)
         return -1;
+
     return iLetter;
 }
 
@@ -99,13 +152,11 @@ int ABCToInt(int iLetter)
  * @param iSize Размер матрицы
  * @return Готовая матрица все элементы которой равны 0
  */
-int** createMatrix(int iSize)
+int **createMatrix(int iSize)
 {
-    int** aiMatrix = new int* [iSize];
+    int **aiMatrix = new int *[iSize];
     for (int iI = 0; iI < iSize; iI++)
-    {
-        aiMatrix[iI] = new int [iSize];
-    }
+        aiMatrix[iI] = new int[iSize];
 
     return aiMatrix;
 }
@@ -116,7 +167,7 @@ int** createMatrix(int iSize)
  * @param aiMatrix Изменяемая матрица
  * @param iSize Размер матрицы
  */
-void updateMatrixValues(int** aiMatrix, int iSize)
+void updateMatrixValues(int **aiMatrix, int iSize)
 {
     std::cout << CLEAR;
     while (true)
@@ -125,25 +176,28 @@ void updateMatrixValues(int** aiMatrix, int iSize)
 
         printMatrix(aiMatrix, iSize);
 
-        std::cout << std::endl;
-        std::cout << LOG_CL << "\t[ X, Y, Value ]" << RESET_CL << " - Enter X, Y, Value parameters separated by a space" << std::endl << "\t\tto change a specific value in the matrix" << std::endl;
-        std::cout << std::endl;
-        std::cout << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Enter 0 in X and Y to go back" << std::endl;
-        std::cout << std::endl;
-        std::cout << LOG_CL << "\t\t[ X,  Y,  Value ]" << RESET_CL << std::endl;
-        std::cout << "Enter answer: " << TITLE_CL;
+        std::cout << std::endl
+                  << LOG_CL << "\t[ X, Y, Value ]" << RESET_CL << " - Enter X, Y, Value parameters separated by a space" << std::endl
+                  << "\t\tto change a specific value in the matrix" << std::endl
+                  << std::endl
+                  << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Enter 0 in X and Y to go back" << std::endl
+                  << std::endl
+                  << LOG_CL << "\t\t[ X,  Y,  Value ]" << RESET_CL << std::endl
+                  << "Enter answer: " << TITLE_CL;
 
         int iX = -1, iY = -1, iValue = 0;
         std::cin >> iX >> iY >> iValue;
 
         std::cout << RESET_CL;
 
-        if (iX == 0 && iY == 0) return;
+        if (iX == 0 && iY == 0)
+            return;
 
         if (iX > iSize || iY > iSize || iX < 0 || iY < 0)
         {
-            std::cout << CLEAR;
-            std::cout << std::endl << WARN_CL << "!!! Wrong input !!!" << RESET_CL << std::endl;
+            std::cout << CLEAR
+                      << std::endl
+                      << WARN_CL << "!!! Wrong input !!!" << RESET_CL << std::endl;
         }
         else
         {
@@ -159,15 +213,11 @@ void updateMatrixValues(int** aiMatrix, int iSize)
  * @param aiMatrix Изменяемая матрица
  * @param iSize Размер матрицы
  */
-void fillRandomMatrix(int** aiMatrix, int iSize)
+void fillRandomMatrix(int **aiMatrix, int iSize)
 {
     for (int iI = 0; iI < iSize; iI++)
-    {
         for (int iJ = 0; iJ < iSize; iJ++)
-        {
             aiMatrix[iI][iJ] = rand() % 10;
-        }
-    }
 }
 
 /**
@@ -176,15 +226,11 @@ void fillRandomMatrix(int** aiMatrix, int iSize)
  * @param aiMatrix Изменяемая матрица
  * @param iSize Размер матрицы
  */
-void fillZeroMatrix(int** aiMatrix, int iSize)
+void fillZeroMatrix(int **aiMatrix, int iSize)
 {
     for (int iI = 0; iI < iSize; iI++)
-    {
         for (int iJ = 0; iJ < iSize; iJ++)
-        {
             aiMatrix[iI][iJ] = 0;
-        }
-    }
 }
 
 /**
@@ -192,58 +238,37 @@ void fillZeroMatrix(int** aiMatrix, int iSize)
  *
  * @param aiMatrix Изменяемая матрица [ Переменная изменяется ]
  * @param iSize Размер матрицы [ Переменная изменяется ]
- * @param iNewSize Новый рахмер матрицы
+ * @param iNewSize Новый размер матрицы
  */
-void resizeMatrix(int** &aiMatrix, int &iSize, int iNewSize)
+void resizeMatrix(int **&aiMatrix, int &iSize, int iNewSize)
 {
     int iBias = iNewSize - iSize;
-    if (iBias == 0) return;
-    int** aiTemp = createMatrix(iNewSize);
+    if (iBias == 0)
+        return;
+
+    int **aiTemp = createMatrix(iNewSize);
 
     int iSelected = ((iBias > 0) ? iSize : iNewSize);
-    for (int iI = iSize; iI > 0; iI--)
+    for (int iI = 0; iI < iSize; iI++)
     {
         for (int iJ = 0; iI < iSelected && iJ < iSelected; iJ++)
-        {
             aiTemp[iI][iJ] = aiMatrix[iI][iJ];
-        }
-        delete[] aiMatrix[iI];
+
+        delete aiMatrix[iI];
         aiMatrix[iI] = aiTemp[iI];
     }
-    delete[] aiMatrix;
-    aiMatrix = aiTemp;
 
+    delete aiMatrix;
+    aiMatrix = aiTemp;
     if (iBias > 0)
-    {
         for (int iI = 0; iI < iNewSize; iI++)
         {
             int iJ = ((iI < iSize) ? iSize : 0);
             for (; iJ < iNewSize; iJ++)
                 aiMatrix[iI][iJ] = 0;
         }
-    }
 
     iSize = iNewSize;
-}
-
-/**
- * Полностью удаляет трёхмерную матрицу
- *
- * @param aiMatrix Трёхмернаая матрица
- * @param aiSizeMatrix Массив с размерами вложенных матриц
- */
-void deleteMatrix(int*** aiMatrix, int* aiSizeMatrix)
-{
-    for (int iI = MATRIX_COUNT; iI > 0; iI--)
-    {
-        int iSize = aiSizeMatrix[iI];
-        for (int iJ = iSize; iJ > 0; iJ--)
-        {
-            delete[] aiMatrix[iI][iJ];
-        }
-        delete[] aiMatrix[iI];
-    }
-    delete[] aiMatrix;
 }
 
 /**
@@ -253,7 +278,7 @@ void deleteMatrix(int*** aiMatrix, int* aiSizeMatrix)
  * @param aiSizeMatrix Массив с размерами вложенных матриц
  * @return Показатель успешного завершения
  */
-bool printMatrixInTXT(int*** aiMatrix, int* aiSizeMatrix)
+bool printMatrixInTXT(int ***aiMatrix, int *aiSizeMatrix)
 {
     std::ofstream matrix;
     matrix.open(TEXT_FILE);
@@ -267,17 +292,19 @@ bool printMatrixInTXT(int*** aiMatrix, int* aiSizeMatrix)
             return false;
 
         int iSize = aiSizeMatrix[iI];
-        matrix << char(iI + 65) << ' ' << iSize << std::endl;
+        matrix << (iI + 1) << ' ' << iSize << std::endl;
         for (int iJ = 0; iJ < iSize; iJ++)
         {
             for (int iK = 0; iK < iSize; iK++)
-            {
                 matrix << ' ' << aiMatrix[iI][iJ][iK];
-            }
+
             matrix << std::endl;
         }
-        matrix << std::endl << std::endl;
+
+        matrix << std::endl
+               << std::endl;
     }
+
     matrix.close();
     return true;
 }
@@ -289,39 +316,58 @@ bool printMatrixInTXT(int*** aiMatrix, int* aiSizeMatrix)
  * @param aiSizeMatrix Массив с размерами матриц
  * @return Показатель успешного завершения
  */
-bool createMatrixFromTXT(int ***aiMatrix, int *aiSizeMatrix) // FIXME: Заполнение матриц с .TXT файла
+bool createMatrixFromTXT(int ***&aiMatrix, int *&aiSizeMatrix)
 {
     std::ifstream matrix;
     matrix.open(TEXT_FILE);
-    if (!matrix.is_open())
+    if (!matrix.is_open() || matrix.eof())
         return false;
 
-    while (matrix.good())
+    while (!matrix.eof())
     {
-        if (matrix.eof())
+        if (!matrix.good())
             break;
 
         if (matrix.fail())
         {
-            deleteMatrix(aiMatrix, aiSizeMatrix);
+            deleteAllMatrix(aiMatrix, aiSizeMatrix);
+            for (int iI = 0; iI < MATRIX_COUNT; iI++)
             return false;
         }
 
-        int iMatrix = 0;
+        int iIndex = -1;
         int iSize = 0;
-        matrix >> iMatrix >> iSize;
-        iMatrix = ABCToInt(iMatrix);
-        aiSizeMatrix[iMatrix] = iSize;
-        aiMatrix[iMatrix] = createMatrix(iSize);
+        matrix >> iIndex >> iSize;
+        if (iIndex > MATRIX_COUNT || iIndex < 0)
+            continue;
 
-        for (int iI = 0; iI < iSize; iI++)
-        {
-            for (int iJ = 0; iJ < iSize; iJ++)
+        iIndex--;
+        if (matrix.eof())
+            break;
+
+        aiSizeMatrix[iIndex] = iSize;
+        aiMatrix[iIndex] = createMatrix(iSize);
+        bool bFlag = true;
+        for (int iJ = 0; bFlag && iJ < iSize; iJ++)
+            for (int iK = 0; iK < iSize; iK++)
             {
-                matrix >> aiMatrix[iMatrix][iI][iJ];
+                if (matrix.eof())
+                {
+                    bFlag = false;
+                    break;
+                }
+
+                matrix >> aiMatrix[iIndex][iJ][iK];
             }
+
+        if (!bFlag)
+        {
+            deleteMatrix(aiMatrix[iIndex], aiSizeMatrix[iIndex]);
+            aiSizeMatrix[iIndex] = 0;
+            break;
         }
     }
+
     matrix.close();
     return true;
 }
@@ -329,23 +375,47 @@ bool createMatrixFromTXT(int ***aiMatrix, int *aiSizeMatrix) // FIXME: Запо�
 /**
  * Обновляет значение матриц из заполненного заранее файла .TXT
  *
- * @param aiMatrix Трёхмернаая матрица
+ * @param aiMatrix Трёхмерная матрица
  * @param aiSizeMatrix Массив с размерами вложенных матриц
+ * @return Показатель успешного завершения
  */
-void updateMatrixFromTXT(int ***aiMatrix, int *aiSizeMatrix) // TODO: Заполнение матриц с .TXT файла
+bool updateMatrixFromTXT(int ***&aiMatrix, int *&aiSizeMatrix)
 {
+    int ***aiTemp = new int **[MATRIX_COUNT];
+    int *aiSizeTemp = new int [MATRIX_COUNT];
+    for (int iI = 0; iI < MATRIX_COUNT; iI++)
+        aiSizeTemp[iI] = 0;
 
+    bool bSuccess = createMatrixFromTXT(aiTemp, aiSizeTemp);
+
+    for (int iI = 0; iI < MATRIX_COUNT; iI++)
+    {
+        if (aiSizeTemp[iI] == 0)
+            continue;
+
+        deleteMatrix(aiMatrix[iI], aiSizeMatrix[iI]);
+        int iSize = (aiSizeMatrix[iI] = aiSizeTemp[iI]);
+        aiMatrix[iI] = createMatrix(iSize);
+        for (int iJ = 0; iJ < iSize; iJ++)
+            for (int iK = 0; iK < iSize; iK++)
+                aiMatrix[iI][iJ][iK] = aiTemp[iI][iJ][iK];
+
+        deleteMatrix(aiTemp[iI], aiSizeTemp[iI]);
+    }
+
+    delete[] aiTemp, aiSizeTemp;
+    return bSuccess;
 }
 
 /**
  * [ Персональное задание номер 4 ]:
  * Скопировать в матрицу С те элементы матрицы А, которые более одного раза встречаются в матрице В
  *
- * // FIXME: Исправить параметры
- * @param Param1 None
- * @param Param2 None
+ * @param aiMatrix Трёхмерная матрица
+ * @param aiSizeMatrix Массив размеров матриц
+ * @param aiIndex Массив с индексами
  */
-void task4()    // TODO: Дополнительное задание 4 в курсовой работе
+void task4(int ***aiMatrix, int *aiSizeMatrix, int *aiIndex[3]) // TODO: Дополнительное задание 4 в курсовой работе
 {
 
 }
@@ -354,11 +424,11 @@ void task4()    // TODO: Дополнительное задание 4 в кур
  * [ Персональное задание номер 14 ]:
  * Вывести на экран те элементы матрицы С, которые равны сумме соответствующих элементов матриц А и В
  *
- * // FIXME: Исправить параметры
- * @param Param1 None
- * @param Param2 None
+ * @param aiMatrix Трёхмерная матрица
+ * @param aiSizeMatrix Массив размеров матриц
+ * @param aiIndex Массив с индексами
  */
-void task14()   // TODO: Дополнительное задание 14 в курсовой работе
+void task14(int ***aiMatrix, int *aiSizeMatrix, int *aiIndex[3]) // TODO: Дополнительное задание 14 в курсовой работе
 {
 
 }
@@ -375,19 +445,13 @@ int inputMatrixSize(char cLetter)
     while (true)
     {
         std::cout << "Enter the size of the matrix " << cLetter << ": ";
-
         int iAnswer = -1;
         std::cin >> iAnswer;
-
         std::cout << RESET_CL;
         if (iAnswer <= 0)
-        {
             std::cout << CLEAR << WARN_CL << "!!! Matrix size must be greater than zero !!!" << RESET_CL << std::endl;
-        }
         else
-        {
             return iAnswer;
-        }
     }
 }
 
@@ -398,7 +462,7 @@ int inputMatrixSize(char cLetter)
  * @param aiSizeMatrix Проверяемые на заполнение матрицы [ Не обязательно ]
  * @return Индекс выбранной матрицы
  */
-int selectMatrix(bool bStart = false, int* aiSizeMatrix = {})
+int selectMatrix(bool bStart = false, int *aiSizeMatrix = {})
 {
     std::cout << CLEAR;
     while (true)
@@ -408,31 +472,32 @@ int selectMatrix(bool bStart = false, int* aiSizeMatrix = {})
         {
             std::cout << LOG_CL << "\t[ " << (iI + 1) << " ]" << RESET_CL << " - " << char(iI + 65) << '\t';
             if (bStart && aiSizeMatrix[iI] > 0)
-            {
                 std::cout << SUCCESS_CL << " - Filled ✓ - " << RESET_CL;
-            }
 
             std::cout << std::endl;
         }
-        std::cout << std::endl;
-        std::cout << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Back" << std::endl;
-        std::cout << std::endl;
-        std::cout << "Enter answer: " << TITLE_CL;
+
+        std::cout << std::endl
+                  << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Back" << std::endl
+                  << std::endl
+                  << "Enter answer: " << TITLE_CL;
 
         char iAnswer = -1;
         std::cin >> iAnswer;
         iAnswer = ABCToInt(iAnswer);
-
         std::cout << RESET_CL;
-
         if (iAnswer == -1 || iAnswer > MATRIX_COUNT)
         {
-            std::cout << CLEAR;
-            std::cout << std::endl << WARN_CL << "!!! Wrong input !!!" << RESET_CL << std::endl;
+            std::cout << CLEAR
+                      << std::endl
+                      << WARN_CL << "!!! Wrong input !!!" << RESET_CL << std::endl;
+
             continue;
         }
-        else if (iAnswer == 0) return -1;
-        else return (iAnswer - 1);
+        else if (iAnswer == 0)
+            return -1;
+        else
+            return (iAnswer - 1);
     }
 }
 
@@ -444,103 +509,93 @@ int selectMatrix(bool bStart = false, int* aiSizeMatrix = {})
  * @param aiSizeMatrix Используемый массив с размером матриц
  * @return Значение завершения программы или Продолжения в { Основная стадия }
  */
-bool start(int*** aiMatrix, int* aiSizeMatrix)
+bool start(int ***aiMatrix, int *aiSizeMatrix)
 {
     while (true)
     {
         bool bFlag = true;
         for (int iI = 0; iI < MATRIX_COUNT; iI++)
-        {
             if (aiSizeMatrix[iI] == 0)
             {
                 bFlag = false;
                 break;
             }
-        }
 
-        std::cout << CLEAR;
-        std::cout << LOG_CL << "Matrix input:" << RESET_CL << std::endl;
-        std::cout << LOG_CL << "\t[ 1 ]" << RESET_CL << " - Creating a matrices filled with zeros ( 0 )" << std::endl;
-        std::cout << LOG_CL << "\t[ 2 ]" << RESET_CL << " - Creating matrices filled with random numbers ( 0 - 10 )" << std::endl;
-        std::cout << LOG_CL << "\t[ 3 ]" << RESET_CL << " - Filling matrices from a pre-entered .TXT file" << std::endl;
+        std::cout << CLEAR
+                  << LOG_CL << "Matrix input:" << RESET_CL << std::endl
+                  << LOG_CL << "\t[ 1 ]" << RESET_CL << " - Creating a matrices filled with zeros ( 0 )" << std::endl
+                  << LOG_CL << "\t[ 2 ]" << RESET_CL << " - Creating matrices filled with random numbers ( 0 - 10 )" << std::endl
+                  << LOG_CL << "\t[ 3 ]" << RESET_CL << " - Filling matrices from a pre-entered .TXT file" << std::endl;
 
         if (bFlag)
-        {
             std::cout << SUCCESS_CL << "\t[ 4 ]" << RESET_CL << " - Continue" << std::endl;
-        }
 
-        std::cout << std::endl;
-        std::cout << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Exiting the program" << std::endl;
-        std::cout << std::endl;
-        std::cout << "Enter answer: " << TITLE_CL;
-
+        std::cout << std::endl
+                  << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Exiting the program" << std::endl
+                  << std::endl
+                  << "Enter answer: " << TITLE_CL;
         char iAnswer = -1;
         std::cin >> iAnswer;
         iAnswer = ABCToInt(iAnswer);
-
         std::cout << RESET_CL;
-
         switch (iAnswer)
         {
-            case 0:     // Выход из программы
+            case 0: // Выход из программы
             {
                 return false;
             }
 
-            case 1:     // Заполнение матрицы нулями
+            case 1: // Заполнение матрицы нулями
             {
                 int aiSelectedMatrix = selectMatrix(true, aiSizeMatrix);
-                if (aiSelectedMatrix == -1) continue;
+                if (aiSelectedMatrix == -1)
+                    continue;
 
                 int iSize = (aiSizeMatrix[aiSelectedMatrix] = inputMatrixSize(aiSelectedMatrix + 65)); // 65 = A ( int в ASCII )
                 aiMatrix[aiSelectedMatrix] = createMatrix(iSize);
-
                 fillZeroMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-
                 std::cout << LOG_CL << "Output of the modified matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 2:     // Заполнение матрицы рандомом
+            case 2: // Заполнение матрицы рандомом
             {
                 int aiSelectedMatrix = selectMatrix(true, aiSizeMatrix);
-                if (aiSelectedMatrix == -1) continue;
+                if (aiSelectedMatrix == -1)
+                    continue;
 
                 int iSize = (aiSizeMatrix[aiSelectedMatrix] = inputMatrixSize(aiSelectedMatrix + 65)); // 65 = A ( int в ASCII )
                 aiMatrix[aiSelectedMatrix] = createMatrix(iSize);
-
                 fillRandomMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-
                 std::cout << LOG_CL << "Output of the modified matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 3:     // Заполнение матриц программы из .TXT файла
+            case 3: // Заполнение матриц программы из .TXT файла
             {
                 bool bSuccess = createMatrixFromTXT(aiMatrix, aiSizeMatrix);
                 if (bSuccess)
-                {
                     std::cout << SUCCESS_CL << "Reading matrices from the " << TEXT_FILE << " file was successful!" << RESET_CL << std::endl;
-                }
                 else
-                {
                     std::cout << WARN_CL << "Reading matrices from the file " << TEXT_FILE << " failed!" << RESET_CL << std::endl;
-                }
-                sleep(3 * DELAY);
+
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 4:     // Переход в { Основная стадия }
+            case 4: // Переход в { Основная стадия }
             {
-                if (!bFlag) continue;
+                if (!bFlag)
+                    continue;
+
                 return true;
             }
 
-            default:       // Заного печатать меню
+            default: // Заного печатать меню
             {
                 continue;
             }
@@ -555,152 +610,150 @@ bool start(int*** aiMatrix, int* aiSizeMatrix)
  * @param aiMatrix Используемая трёхмерная матрица
  * @param aiSizeMatrix Используемый массив с размером матриц
  */
-void menu(int*** aiMatrix, int* aiSizeMatrix)
+void menu(int ***aiMatrix, int *aiSizeMatrix)
 {
     while (true)
     {
-        std::cout << CLEAR;
-        std::cout << LOG_CL << "Menu:" << RESET_CL << std::endl;
-        std::cout << LOG_CL << "\t[ 1 ]" << RESET_CL << " - Change matrices via the console ( manual input )" << std::endl;
-        std::cout << LOG_CL << "\t[ 2 ]" << RESET_CL << " - Updates matrices with a pre-entered .TXT file" << std::endl;
-        std::cout << LOG_CL << "\t[ 3 ]" << RESET_CL << " - Fills matrices with zeros ( 0 )" << std::endl;
-        std::cout << LOG_CL << "\t[ 4 ]" << RESET_CL << " - Fills existing matrices with random numbers ( 0 - 10 )" << std::endl;
-        std::cout << LOG_CL << "\t[ 5 ]" << RESET_CL << " - Resizes matrices" << std::endl;
-        std::cout << LOG_CL << "\t[ 6 ]" << RESET_CL << " - Outputting matrices to the console" << std::endl;
-        std::cout << LOG_CL << "\t[ 7 ]" << RESET_CL << " - Outputting matrices to a previously created .TXT file" << std::endl;
-        std::cout << std::endl;
-        std::cout << WARN_CL << "\t[ 8 ]" << RESET_CL << " - (Task 4) " << std::endl;
-        std::cout << WARN_CL << "\t[ 9 ]" << RESET_CL << " - (Task 14) " << std::endl;
-        std::cout << std::endl;
-        std::cout << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Exiting the program" << std::endl;
-        std::cout << std::endl;
-        std::cout << "Enter answer: " << TITLE_CL;
+        std::cout << CLEAR
+                  << LOG_CL << "Menu:" << RESET_CL << std::endl
+                  << LOG_CL << "\t[ 1 ]" << RESET_CL << " - Change matrices via the console ( manual input )" << std::endl
+                  << LOG_CL << "\t[ 2 ]" << RESET_CL << " - Updates matrices with a pre-entered .TXT file" << std::endl
+                  << LOG_CL << "\t[ 3 ]" << RESET_CL << " - Fills matrices with zeros ( 0 )" << std::endl
+                  << LOG_CL << "\t[ 4 ]" << RESET_CL << " - Fills existing matrices with random numbers ( 0 - 10 )" << std::endl
+                  << LOG_CL << "\t[ 5 ]" << RESET_CL << " - Resizes matrices" << std::endl
+                  << LOG_CL << "\t[ 6 ]" << RESET_CL << " - Outputting matrices to the console" << std::endl
+                  << LOG_CL << "\t[ 7 ]" << RESET_CL << " - Outputting matrices to a previously created .TXT file" << std::endl
+                  << std::endl
+                  << WARN_CL << "\t[ 8 ]" << RESET_CL << " - (Task 4) " << std::endl
+                  << WARN_CL << "\t[ 9 ]" << RESET_CL << " - (Task 14) " << std::endl
+                  << std::endl
+                  << EXIT_CL << "\t[ 0 ]" << RESET_CL << " - Exiting the program" << std::endl
+                  << std::endl
+                  << "Enter answer: " << TITLE_CL;
 
         char iAnswer = -1;
         std::cin >> iAnswer;
         iAnswer = ABCToInt(iAnswer);
-
         std::cout << RESET_CL;
-
         switch (iAnswer)
         {
-            case 0:     // Выход из программы
+            case 0: // Выход из программы
             {
                 return;
             }
 
-            case 1:     // Ручной ввод с консоли в матрицу
+            case 1: // Ручной ввод с консоли в матрицу
             {
                 int aiSelectedMatrix = selectMatrix(false);
-                if (aiSelectedMatrix == -1) continue;
+                if (aiSelectedMatrix == -1)
+                    continue;
 
                 updateMatrixValues(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
                 continue;
             }
 
-            case 2:     // Обновление матриц программы из .TXT файла
+            case 2: // Обновление матриц программы из .TXT файла
             {
-                updateMatrixFromTXT(aiMatrix, aiSizeMatrix);
-                std::cout << SUCCESS_CL << "Updating matrices from the " << TEXT_FILE << " file was successful!" << RESET_CL << std::endl;
-                sleep(3 * DELAY);
+                bool bSuccess = updateMatrixFromTXT(aiMatrix, aiSizeMatrix);
+                if (bSuccess)
+                    std::cout << SUCCESS_CL << "Updating matrices from the " << TEXT_FILE << " file was successful!" << RESET_CL << std::endl;
+                else
+                    std::cout << WARN_CL << "Updating matrices from the file " << TEXT_FILE << " failed!" << RESET_CL << std::endl;
+
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 3:     // Заполнение матрицы нулями
+            case 3: // Заполнение матрицы нулями
             {
                 int aiSelectedMatrix = selectMatrix(false);
-                if (aiSelectedMatrix == -1) continue;
+                if (aiSelectedMatrix == -1)
+                    continue;
 
                 std::cout << LOG_CL << "Output of the original matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
-
+                wait(3 * DELAY);
                 fillZeroMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-
                 std::cout << LOG_CL << "Output of the modified matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 4:     // Заполнение матрицы рандомом
+            case 4: // Заполнение матрицы рандомом
             {
                 int aiSelectedMatrix = selectMatrix(false);
-                if (aiSelectedMatrix == -1) continue;
+                if (aiSelectedMatrix == -1)
+                    continue;
 
                 std::cout << LOG_CL << "Output of the original matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
-
+                wait(3 * DELAY);
                 fillRandomMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-
                 std::cout << LOG_CL << "Output of the modified matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 5:     // Изменение размера матрицы
+            case 5: // Изменение размера матрицы
             {
                 int aiSelectedMatrix = selectMatrix(false);
-                if (aiSelectedMatrix == -1) continue;
+                if (aiSelectedMatrix == -1)
+                    continue;
 
                 std::cout << LOG_CL << "Output of the original matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
-
+                wait(3 * DELAY);
                 int iNewSize = inputMatrixSize(aiSelectedMatrix + 65); // 65 = A ( int в ASCII )
                 resizeMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix], iNewSize);
-
                 std::cout << LOG_CL << "Output of the modified matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(3 * DELAY);
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 6:     // Вывод матрицы в консоль
+            case 6: // Вывод матрицы в консоль
             {
                 int aiSelectedMatrix = selectMatrix(false);
-                if (aiSelectedMatrix == -1) continue;
+                if (aiSelectedMatrix == -1)
+                    continue;
 
                 std::cout << LOG_CL << "Output of the matrix" << RESET_CL << std::endl;
                 printMatrix(aiMatrix[aiSelectedMatrix], aiSizeMatrix[aiSelectedMatrix]);
-                sleep(4 * DELAY);
+                wait(4 * DELAY);
                 continue;
             }
 
-            case 7:     // Заполнение .TXT файла матрицами из программы
+            case 7: // Заполнение .TXT файла матрицами из программы
             {
                 bool bSuccess = printMatrixInTXT(aiMatrix, aiSizeMatrix);
                 if (bSuccess)
-                {
                     std::cout << SUCCESS_CL << "Writing matrices to the " << TEXT_FILE << " file was successful!" << RESET_CL << std::endl;
-                }
                 else
-                {
                     std::cout << WARN_CL << "Writing matrices from the file " << TEXT_FILE << " failed!" << RESET_CL << std::endl;
-                }
-                sleep(3 * DELAY);
+
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 8:     // TODO: Дополнительное задание 4 в курсовой работе
+            case 8: // TODO: Дополнительное задание 4 в курсовой работе
             {
                 // task4();
                 std::cout << SUCCESS_CL << "Done!" << RESET_CL << std::endl;
-                sleep(3 * DELAY);
+                wait(3 * DELAY);
                 continue;
             }
 
-            case 9:     // TODO: Дополнительное задание 14 в курсовой работе
+            case 9: // TODO: Дополнительное задание 14 в курсовой работе
             {
                 // task14();
                 std::cout << SUCCESS_CL << "Done!" << RESET_CL << std::endl;
-                sleep(3 * DELAY);
+                wait(3 * DELAY);
                 continue;
             }
 
-            default:    // Заного напечатать меню
+            default: // Заного напечатать меню
             {
                 continue;
             }
@@ -716,32 +769,31 @@ void menu(int*** aiMatrix, int* aiSizeMatrix)
 void loading(int iSeconds)
 {
     char cDelete[11] = "\b\b\b\b\b\b\b\b\b\b";
-
+    int delay = 0.1 * DELAY;
     std::cout << "Loading   " << std::flush;
-    for (int iI = 0; iI < iSeconds; iI++) {
+    for (int iI = 0; iI < iSeconds; iI++)
+    {
         std::cout << cDelete << "Loading   " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "LOading   " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "LoAding   " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "LoaDing   " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "LoadIng   " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "LoadiNg   " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "LoadinG   " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "Loading.  " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "Loading.. " << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
         std::cout << cDelete << "Loading..." << std::flush;
-        sleep(1 * DELAY);
+        wait(delay);
     }
-
-    return;
 }
 
 /**
@@ -749,18 +801,18 @@ void loading(int iSeconds)
  */
 void title()
 {
-    std::cout << CLEAR;
-    std::cout << SUCCESS_CL << "\t\t\"Coursework on PROGRAMMING\" No. 1" << TITLE_CL << std::endl;
-    std::cout << "\tAuthor: Ilya Balakirev aka. MoonFoxy                    " << std::endl;
-    std::cout << "\tGitHub: https://github.com/MoonFoxy/                    " << std::endl;
-    std::cout << "\tFirst course                                            " << std::endl;
-    std::cout << "\tFaculty of Computer Technology and Informatics          " << std::endl;
-    std::cout << "\tManagement in technical systems                         " << std::endl;
-    std::cout << "\tGroup: 0391                                             " << std::endl;
-    std::cout << std::endl << "\t\t\t\t";
+    std::cout << CLEAR
+              << SUCCESS_CL << "\t\t\"Coursework on PROGRAMMING\" No. 1" << TITLE_CL << std::endl
+              << "\tAuthor: Ilya Balakirev aka. MoonFoxy                    " << std::endl
+              << "\tGitHub: https://github.com/MoonFoxy/                    " << std::endl
+              << "\tFirst course                                            " << std::endl
+              << "\tFaculty of Computer Technology and Informatics          " << std::endl
+              << "\tManagement in technical systems                         " << std::endl
+              << "\tGroup: 0391                                             " << std::endl
+              << std::endl
+              << "\t\t\t\t";
 
     loading(5);
-
     std::cout << RESET_CL << std::endl;
 }
 
@@ -771,18 +823,15 @@ void title()
  */
 int main()
 {
-    int*** aiMatrix = new int** [MATRIX_COUNT];
+    int ***aiMatrix = new int **[MATRIX_COUNT];
     int aiSizeMatrix[MATRIX_COUNT] = { 0 };
-
     title();
     bool bFlag = start(aiMatrix, aiSizeMatrix);
     if (bFlag)
-    {
         menu(aiMatrix, aiSizeMatrix);
-    }
 
-
-    std::cout << std::endl << EXIT_CL << "\t\tExit the programm" << RESET_CL << std::endl;
-    deleteMatrix(aiMatrix, aiSizeMatrix);
+    std::cout << std::endl
+              << EXIT_CL << "\t\tExit the programm" << RESET_CL << std::endl;
+    deleteAllMatrix(aiMatrix, aiSizeMatrix);
     return 0;
 }
