@@ -410,22 +410,22 @@ bool updateMatrixFromTXT(int ***&aiMatrix, int *aiSizeMatrix)
  * @param aiSizeMatrix Массив размеров матриц
  * @param aiIndex Массив с индексами
  */
-void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex) // TODO: Дополнительное задание 4 в курсовой работе
+void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex)
 {
-    int iSizeA = aiSizeMatrix[aiIndex[0]];
-    int iSizeB = aiSizeMatrix[aiIndex[1]];
-    int iSizeC = aiSizeMatrix[aiIndex[2]];
+    int iA = aiIndex[0];
+    int iB = aiIndex[1];
+    int iC = aiIndex[2];
     int iSelected = 0;
-    if ((iSizeA - iSizeB) > 0)
-        if ((iSizeB - iSizeC) > 0)
-            iSelected = iSizeC;
+    if ((aiSizeMatrix[iA] - aiSizeMatrix[iB]) > 0)
+        if ((aiSizeMatrix[iB] - aiSizeMatrix[iC]) > 0)
+            iSelected = aiSizeMatrix[iC];
         else
-            iSelected = iSizeB;
+            iSelected = aiSizeMatrix[iB];
     else
-        if ((iSizeA - iSizeC) > 0)
-            iSelected = iSizeC;
+        if ((aiSizeMatrix[iA] - aiSizeMatrix[iC]) > 0)
+            iSelected = aiSizeMatrix[iC];
         else
-            iSelected = iSizeA;
+            iSelected = aiSizeMatrix[iA];
 
     int iSizeSquare = iSelected * iSelected;
     int aiMatches[iSizeSquare];
@@ -438,7 +438,7 @@ void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex) // TODO: Допо�
     for (int iI = 0; iI < iSizeSquare; iI++)
     {
         bool bFlag1 = true;
-        int iElement = aiMatrix[aiIndex[1]][iY][iX];
+        int iElement = aiMatrix[iB][iY][iX];
         for (int iJ = 0; iJ < iMatchesIndex; iJ++)
             if (iElement == aiMatches[iJ])
             {
@@ -451,7 +451,7 @@ void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex) // TODO: Допо�
             bool bFlag2 = true;
             for (int iJ = iY; bFlag2 && iJ < iSelected; iJ++)
                 for (int iK = iX; iK < iSelected; iK++)
-                    if (iElement == aiMatrix[aiIndex[1]][iJ][iK])
+                    if (iElement == aiMatrix[iB][iJ][iK])
                     {
                         aiMatches[++iMatchesIndex] = iElement;
                         bFlag2 = false;
@@ -459,7 +459,7 @@ void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex) // TODO: Допо�
                     }
         }
 
-        if (iX == iSizeB - 1)
+        if (iX == aiSizeMatrix[iB] - 1)
         {
             iX = 0;
             iY++;
@@ -471,8 +471,8 @@ void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex) // TODO: Допо�
     for (int iI = 0; iI < iMatchesIndex + 1; iI++)
         for (int iJ = 0; iJ < iSelected; iJ++)
             for (int iK = 0; iK < iSelected; iK++)
-                if (aiMatches[iI] == aiMatrix[aiIndex[1]][iJ][iK])
-                    aiMatrix[aiIndex[2]][iJ][iK] = aiMatrix[aiIndex[0]][iJ][iK];
+                if (aiMatches[iI] == aiMatrix[iB][iJ][iK])
+                    aiMatrix[iC][iJ][iK] = aiMatrix[iA][iJ][iK];
 }
 
 /**
@@ -483,9 +483,35 @@ void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex) // TODO: Допо�
  * @param aiSizeMatrix Массив размеров матриц
  * @param aiIndex Массив с индексами
  */
-void task14(int ***aiMatrix, int *aiSizeMatrix, int *aiIndex) // TODO: Дополнительное задание 14 в курсовой работе
+void task14(int ***aiMatrix, int *aiSizeMatrix, int *aiIndex)
 {
+    int iA = aiIndex[0];
+    int iB = aiIndex[1];
+    int iC = aiIndex[2];
+    int iSelected = 0;
+    if ((aiSizeMatrix[iA] - aiSizeMatrix[iB]) > 0)
+        if ((aiSizeMatrix[iB] - aiSizeMatrix[iC]) > 0)
+            iSelected = aiSizeMatrix[iC];
+        else
+            iSelected = aiSizeMatrix[iB];
+    else if ((aiSizeMatrix[iA] - aiSizeMatrix[iC]) > 0)
+        iSelected = aiSizeMatrix[iC];
+    else
+        iSelected = aiSizeMatrix[iA];
 
+    for (int iI = 0; iI < iSelected; iI++)
+    {
+        std::cout << TITLE_CL << '\t';
+        for (int iJ = 0; iJ < iSelected; iJ++)
+            if ((aiMatrix[iA][iI][iJ] + aiMatrix[iB][iI][iJ]) == aiMatrix[iC][iI][iJ])
+                std::cout << ' ' << aiMatrix[iC][iI][iJ];
+            else
+                std::cout << "  ";
+
+        std::cout << RESET_CL << std::endl;
+    }
+
+    std::cout << std::endl;
 }
 
 /**
@@ -792,7 +818,7 @@ void menu(int ***aiMatrix, int *aiSizeMatrix)
                 continue;
             }
 
-            case 8: // TODO: Персональное задание 4 в курсовой работе
+            case 8: // Персональное задание 4 в курсовой работе
             {
                 /**
                  * [ Персональное задание номер 14 ]:
@@ -823,7 +849,7 @@ void menu(int ***aiMatrix, int *aiSizeMatrix)
                 continue;
             }
 
-            case 9: // TODO: Персональное задание 14 в курсовой работе
+            case 9: // Персональное задание 14 в курсовой работе
             {
                 /**
                  * [ Персональное задание номер 14 ]:
@@ -844,12 +870,8 @@ void menu(int ***aiMatrix, int *aiSizeMatrix)
                 if (bFlag == false)
                     continue;
 
-                std::cout << LOG_CL << "Output of the original matrix" << RESET_CL << std::endl;
-                printMatrix(aiMatrix[aiIndex[2]], aiSizeMatrix[aiIndex[2]]);
-                wait();
-                // task14(aiMatrix, aiSizeMatrix, aiIndex);
-                std::cout << LOG_CL << "Output of the modified matrix" << RESET_CL << std::endl;
-                printMatrix(aiMatrix[aiIndex[2]], aiSizeMatrix[aiIndex[2]]);
+                std::cout << LOG_CL << "Output of the solution" << RESET_CL << std::endl;
+                task14(aiMatrix, aiSizeMatrix, aiIndex);
                 wait();
                 continue;
             }
