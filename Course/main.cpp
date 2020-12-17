@@ -214,7 +214,10 @@ void fillRandomMatrix(int **aiMatrix, int iSize)
 {
     for (int iI = 0; iI < iSize; iI++)
         for (int iJ = 0; iJ < iSize; iJ++)
+        {
+            std::srand(rand());
             aiMatrix[iI][iJ] = rand() % 10;
+        }
 }
 
 /**
