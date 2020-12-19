@@ -431,7 +431,7 @@ void task4(int ***&aiMatrix, int *aiSizeMatrix, int *aiIndex)
             iSelected = aiSizeMatrix[iA];
 
     int iSizeSquare = iSelected * iSelected;
-    int aiMatches[iSizeSquare];
+    int *aiMatches = new int [iSizeSquare];
     for (int iI = 0; iI < iSizeSquare; iI++)
         aiMatches[iI] = 0;
 
