@@ -30,7 +30,7 @@
 #define MATRIX_COUNT 3
 
 // Файл для записи и чтения данных ( Полный путь до файла )
-#define TEXT_FILE "./Course/file.txt"
+#define TEXT_FILE "./file.txt"
 
 // Очистка консоли
 #define CLEAR "\x1B[2J\x1B[H"
