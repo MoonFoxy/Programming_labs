@@ -73,16 +73,17 @@ int main()
     do
     {
         std::cout << CLEAR
+                  << "Choose an action!" << std::endl
                   << "Size of the cinema " << iX << "x" << iY << std::endl
                   << std::endl
                   << "[ 1 ] - Fix the seat reservation" << std::endl
                   << "[ 2 ] - Cancel seat reservation" << std::endl
                   << "[ 3 ] - Display seats" << std::endl
                   << std::endl
-                  << "[ 4 ] - Calculate the total number of reserved seats" << std::endl
-                  << "[ 5 ] - Display a list like: \"Row number - Number of spectators\"" << std::endl
-                  << "[ 6 ] - Display a list of fully occupied hall rows" << std::endl
-                  << "[ 7 ] - Display the row number with the maximum number of reserved seats" << std::endl
+                  << "[ 4 ] - ( Task A ) Calculate the total number of reserved seats" << std::endl
+                  << "[ 5 ] - ( Task B ) Display a list like: \"Row number - Number of spectators\"" << std::endl
+                  << "[ 6 ] - ( Task C ) Display a list of fully occupied hall rows" << std::endl
+                  << "[ 7 ] - ( Task D ) Display the row number with the maximum number of reserved seats" << std::endl
                   << std::endl
                   << "[ 0 ] - Exit" << std::endl
                   << std::endl
@@ -91,11 +92,11 @@ int main()
 
         switch (iAnswer)
         {
-            case 0:
-                break;
-
             default:
                 continue;
+
+            case 0:
+                break;
 
             case 1:
             {
