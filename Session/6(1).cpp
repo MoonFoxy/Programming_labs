@@ -5,6 +5,8 @@
 
 void wait()
 {
+    std::cout << std::endl
+              << "Press enter to continue" << std::endl;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::getchar();
 }
@@ -127,7 +129,7 @@ int main()
                             iAmountNullPaths++;
 
                     if (iAmountNullPaths == 8)
-                        std::cout << (iI + 1) << " ;";
+                        std::cout << (iI + 1) << "; ";
                 }
 
                 std::cout << std::endl;
