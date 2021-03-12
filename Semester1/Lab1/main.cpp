@@ -12,7 +12,7 @@ int main()
     float fX = 0, fY = 0;
     while (true)
     {
-        std::cout << "Enter coordinates:\t";
+        std::cout << "Enter coordinates:\n";
         std::cin >> fX >> fY;
 
         if ((fX == 0) && (fY == 0)) break;
