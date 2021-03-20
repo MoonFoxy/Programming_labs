@@ -1,11 +1,4 @@
 #include <iostream>
-#include <limits>
-
-void wait()
-{
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::getchar();
-}
 
 struct A
 {
@@ -63,7 +56,5 @@ int main()
 
     // 1.Г
     h = task2(100);
-
-    wait();
     return 0;
 }

@@ -10,9 +10,16 @@
 
 #include <iostream>
 #include <cstring>
+#include <limits>
 
 #define TEXT_SIZE 80
 #define KEY_SIZE 10
+
+void wait()
+{
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getchar();
+}
 
 int main()
 {
@@ -83,5 +90,6 @@ int main()
         pcToken = std::strtok(NULL, acCharts);
     }
 
+    wait();
     return 0;
 }

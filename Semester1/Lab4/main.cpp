@@ -10,6 +10,13 @@
 */
 
 #include <iostream>
+#include <limits>
+
+void wait()
+{
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getchar();
+}
 
 int main()
 {
@@ -105,5 +112,6 @@ int main()
     }
     std::cout << "\n";
 
+    wait();
     return 0;
 }

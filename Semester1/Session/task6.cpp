@@ -166,5 +166,6 @@ int main()
         }
     } while (iAnswer != 0);
 
+    wait();
     return 0;
 }

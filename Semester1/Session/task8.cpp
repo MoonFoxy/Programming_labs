@@ -239,5 +239,7 @@ int main()
         delete[] aiMatrix[iI];
 
     delete[] aiMatrix;
+
+    wait();
     return 0;
 }
