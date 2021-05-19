@@ -1,60 +1,68 @@
 #include <iostream>
+#include <limits>
 
-struct A
+struct PhoneCall
 {
-    int *xp[10];
-    int d[5];
-    int *k;
+    char acIncomingNumber[12];
+    char acOutgoingNumber[12];
+    int iTalkTime;
+    PhoneCall *next;
 };
 
-struct B
+/**
+ * Функция ожидания действия
+ */
+void wait()
 {
-    A *xt;
-    B *r;
-};
-
-B *task1(int iNum)
-{
-    B *p;
-    p = new B;
-    p->xt = new A;
-    p->xt->k = new int[20];
-
-    for (int i = 0; i < 20; i++)
-        p->xt->k[i] = 1;
-
-    if (iNum-- != 1)
-        p->r = task1(iNum);
-
-    return p;
-}
-
-B *task2(int iNum)
-{
-    B *p;
-    p = new B;
-    p->xt = new A;
-
-    for (int i = 0; i < 10; i++)
-    {
-        p->xt->xp[i] = new int;
-        *(p->xt->xp[i]) = 1;
-    }
-
-    if (iNum-- != 1)
-        p->r = task2(iNum);
-
-    return p;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getchar();
 }
 
 int main()
 {
-    B *h, *p, *t, g[50];
+    int iTalkTimeLimit = 0;
+    PhoneCall *tempCall, *bufferCall;
+    tempCall = new PhoneCall;
+    bufferCall = tempCall;
+    while (true)
+    {
+        std::cout << "Enter the incoming number: " << std::endl;
+        std::cin >> bufferCall->acIncomingNumber;
+        if (bufferCall->acIncomingNumber[0] = '0' && bufferCall->acIncomingNumber[1] == '\0')
+        {
+            bufferCall->next = nullptr;
+            break;
+        }
+        else
+        {
+            std::cout << "Enter outgoing number: " << std::endl;
+            std::cin >> bufferCall->acOutgoingNumber;
+            std::cout << "Enter a talk time: " << std::endl;
+            std::cin >> bufferCall->iTalkTime;
+            if (bufferCall->iTalkTime > iTalkTimeLimit)
+                iTalkTimeLimit = bufferCall->iTalkTime;
+        }
+        bufferCall->next = new PhoneCall;
+        bufferCall = bufferCall->next;
+    }
+    std::cout << "Talk time limit: " << iTalkTimeLimit << std::endl;
+    bufferCall = tempCall;
 
-    // 1.B
-    h = task1(100);
+    while (true)
+    {
+        if (bufferCall == nullptr)
+            break;
 
-    // 1.Г
-    h = task2(100);
+        std::cout << bufferCall->acIncomingNumber << "\t" << bufferCall->acOutgoingNumber << "\t" << bufferCall->iTalkTime << std::endl;
+        bufferCall = bufferCall->next;
+    }
+
+    wait();
+    // do
+    // {
+    //     tempCall = bufferCall;
+    //     bufferCall = bufferCall->next;
+    //     delete tempCall;
+    // } while (bufferCall != nullptr);
     return 0;
 }
