@@ -27,14 +27,16 @@
 #include <cstring>	// Для функции memcmp
 #include <limits>	// Для очищении потока консоли
 
+using namespace std;
+
 // Файл для записи и чтения данных ( Полный путь до файла ) < Стандартное значение >
 #define TEXT_FILE "./file.txt"
 
 // Очистка консоли ( Коряво работает )
 #define CLEAR "\x1B[2J\x1B[H"
 
-std::ofstream fileOut;
-std::ifstream fileIn;
+ofstream fileOut;
+ifstream fileIn;
 
 struct Student	// Список студентов
 {
@@ -43,7 +45,7 @@ struct Student	// Список студентов
 	int iGrant;            // Степендия студента
 	int aiGrades[5];        // Оценки студента
 	int iSumOfGrades = 0;	// Сумма баллов студента
-	double dScore;          // Значение показателя «средний балл» / «объем стипендии»
+	double dScore;          // Значение показателя «средний балл» / «объем стипендии» TODO:
 
 	Student *nextStudent;  // Ссылка на следующего студента в порядке ввода
 };
@@ -65,8 +67,8 @@ struct Group	// Список групп
  */
 void wait()
 {
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	std::getchar();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	getchar();
 }
 
 /**
@@ -74,15 +76,15 @@ void wait()
  */
 void title()
 {
-	std::cout << CLEAR
-			  << "\t\t\"Coursework on PROGRAMMING\" No. 2" << std::endl
-			  << "\tAuthor: Ilya Balakirev aka. MoonFoxy" << std::endl
-			  << "\tGitHub: https://github.com/MoonFoxy/ ( Plz don't )" << std::endl
-			  << "\tSecond course" << std::endl
-			  << "\tFaculty of Computer Technology and Informatics" << std::endl
-			  << "\tManagement in technical systems" << std::endl
-			  << "\tGroup: 0391" << std::endl
-			  << std::endl;
+	cout << CLEAR
+			  << "\t\t\"Coursework on PROGRAMMING\" No. 2" << endl
+			  << "\tAuthor: Ilya Balakirev aka. MoonFoxy" << endl
+			  << "\tGitHub: https://github.com/MoonFoxy/ ( Plz don't )" << endl
+			  << "\tSecond course" << endl
+			  << "\tFaculty of Computer Technology and Informatics" << endl
+			  << "\tManagement in technical systems" << endl
+			  << "\tGroup: 0391" << endl
+			  << endl;
 
 	wait();
 }
@@ -96,14 +98,14 @@ void output(Group *(&head), Group *(&back))
 		buffer->lastStudent = buffer->firstStudent;
 		while (buffer->lastStudent)
 		{
-			std::cout << "Name:" << buffer->lastStudent->acName << std::endl
-					  << "Group number:" << buffer->lastStudent->acGroup << std::endl
+			cout << "Name:" << buffer->lastStudent->acName << endl
+					  << "Group number:" << buffer->lastStudent->acGroup << endl
 					  << "Evaluations:";
 
 			for (int iI = 0; iI < 5; iI++)
-				std::cout << buffer->lastStudent->aiGrades[iI] << "  "
-						  << std::endl
-						  << "Grants size:" << buffer->lastStudent->iGrant << std::endl;
+				cout << buffer->lastStudent->aiGrades[iI] << "  "
+						  << endl
+						  << "Grants size:" << buffer->lastStudent->iGrant << endl;
 
 			buffer->lastStudent = buffer->lastStudent->nextStudent;
 		}
@@ -194,7 +196,7 @@ void fileInput(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&ba
 {
 	Group *buffer;
 	char acGroup[5];
-	std::string name = TEXT_FILE;
+	string name = TEXT_FILE;
 
 	fileIn.open(name);
 	fileIn >> acGroup;
@@ -202,7 +204,7 @@ void fileInput(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&ba
 		while (!strcmp(acGroup, "0\0"))
 		{
 			int iKey = 0;
-			if (!head)
+			if (head == nullptr)
 			{
 				head = new Group;
 				back = head;
@@ -222,7 +224,7 @@ void fileInput(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&ba
 					{
 						break;
 					}
-					if (!buffer->nextGroup)
+					if (buffer->nextGroup == nullptr)
 					{
 						back->nextGroup = new Group;
 						back = back->nextGroup;
@@ -237,7 +239,7 @@ void fileInput(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&ba
 						buffer = buffer->nextGroup;
 				}
 			}
-			if (!back->firstStudent)
+			if (back->firstStudent == nullptr)
 			{
 				back->firstStudent = new Student; // Создаём узел для нового студентав в новой группе
 				back->lastStudent = back->firstStudent;
@@ -263,7 +265,7 @@ void fileInput(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&ba
 			}
 			fileIn >> back->lastStudent->iGrant;
 			back->lastStudent->dScore = back->lastStudent->iSumOfGrades / back->lastStudent->iGrant;
-			if (head->nextGroup && iKey != 0)
+			if (head->nextGroup != nullptr && iKey != 0)
 			{
 				sort_top(backSorted, back, headSorted, iKey);
 			}
@@ -281,11 +283,11 @@ void fileInput(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&ba
 
 void fileOutput(Group *(&head), Group *(&back))
 {
-	std::string name = TEXT_FILE;
+	string name = TEXT_FILE;
 	Group *buffer{ nullptr };
 	buffer = head;
-	std::cout << "Enter the file name to save: " << std::endl;
-	std::cin >> name;
+	cout << "Enter the file name to save: " << endl;
+	cin >> name;
 	fileOut.open(name);
 	{
 		while (buffer)
@@ -293,12 +295,12 @@ void fileOutput(Group *(&head), Group *(&back))
 			buffer->lastStudent = buffer->firstStudent;
 			while (buffer->lastStudent)
 			{
-				fileOut << buffer->lastStudent->acName << std::endl;
-				fileOut << buffer->lastStudent->acGroup << std::endl;
+				fileOut << buffer->lastStudent->acName << endl;
+				fileOut << buffer->lastStudent->acGroup << endl;
 				for (int iI = 0; iI < 5; iI++)
 					fileOut << buffer->lastStudent->aiGrades[iI] << "  ";
-				fileOut << std::endl
-					<< buffer->lastStudent->iGrant << std::endl;
+				fileOut << endl
+					<< buffer->lastStudent->iGrant << endl;
 				buffer->lastStudent = buffer->lastStudent->nextStudent;
 			}
 			buffer = buffer->nextGroup;
@@ -350,24 +352,25 @@ void formDelete(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&b
 	char acBufferGroup[5];
 	bufferGroup = head;
 
-	std::cout << "Enter the group" << std::endl;
-	std::cin >> acBufferGroup;
+	cout << "Enter the group" << endl;
+	cin >> acBufferGroup;
 	while (bufferGroup)
 	{
 		if (strcmp(bufferGroup->acGroup, acBufferGroup))
 			break;
 		else
 		{
-			if (!bufferGroup->nextGroup)
+			if (bufferGroup->nextGroup == nullptr)
 			{
-				std::cout << "You entered a group that is not listed." << std::endl;
+				cout << "You entered a group that is not listed." << endl;
 				return;
 			}
 		}
 		bufferGroup = bufferGroup->nextGroup;
 	}
-	std::cout << "Enter a name to delete." << std::endl;
-	std::cin.getline(acBufferStudentName, 100);
+	cout << "Enter a name to delete." << endl;
+	cin.getline(acBufferStudentName, 100);
+	cin.getline(acBufferStudentName, 100);
 	bufferStudent = bufferGroup->firstStudent;
 	while (bufferStudent)
 	{
@@ -386,7 +389,7 @@ void formDelete(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&b
 		{
 			while (strcmp(bufferStudent->nextStudent->acName, acBufferStudentName) == 0) // Функция удаления, если ячейка находится на любом месте
 			{
-				if (!bufferStudent->nextStudent->nextStudent)
+				if (bufferStudent->nextStudent->nextStudent == nullptr)
 				{
 					bufferStudent = back->lastStudent;
 					topDelete(headSorted, backSorted, bufferStudent);
@@ -417,8 +420,9 @@ void formEdit(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 	char acBufferStudentName[100];
 	char acBufferGroup[5];
 	bufferGroup = head;
-	std::cout << "Enter a name to edit:" << std::endl;
-	std::cin.getline(acBufferStudentName, 100);
+	cout << "Enter a name to edit:" << endl;
+	cin.getline(acBufferStudentName, 100);
+	cin.getline(acBufferStudentName, 100);
 	while (bufferGroup)
 	{
 		bufferStudent = bufferGroup->firstStudent;
@@ -426,19 +430,19 @@ void formEdit(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 		{
 			if (strcmp(acBufferStudentName, bufferStudent->acName) == 0)
 			{
-				std::cout << "What do you want to change?" << std::endl
-						  << "[ 1 ] - Student name" << std::endl
-						  << "[ 2 ] - Student grades" << std::endl
-						  << "[ 3 ] - Student grant" << std::endl;
+				cout << "What do you want to change?" << endl
+						  << "[ 1 ] - Student name" << endl
+						  << "[ 2 ] - Student grades" << endl
+						  << "[ 3 ] - Student grant" << endl;
 				int iChoice = 0;
-				std::cin >> iChoice;
+				cin >> iChoice;
 				switch (iChoice)
 				{
 					case 1:
 					{
-						std::cout << "Enter the new student name:" << std::endl;
-						std::cin.getline(bufferStudent->acName, 100);
-						std::cin.getline(bufferStudent->acName, 100);
+						cout << "Enter the new student name:" << endl;
+						cin.getline(bufferStudent->acName, 100);
+						cin.getline(bufferStudent->acName, 100);
 						if (bufferGroup->topStudent == bufferStudent)
 						{
 							bufferGroupSorted = headSorted;
@@ -470,11 +474,11 @@ void formEdit(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 
 					case 2:
 					{
-						std::cout << "New student grades:" << std::endl;
+						cout << "New student grades:" << endl;
 						bufferStudent->dScore = 0;
 						for (int iI = 0; iI < 5; iI++)
 						{
-							std::cin >> bufferStudent->aiGrades[iI];
+							cin >> bufferStudent->aiGrades[iI];
 							bufferStudent->dScore += bufferStudent->aiGrades[iI];
 						}
 						if (bufferGroup->topStudent == bufferStudent)
@@ -518,8 +522,8 @@ void formEdit(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 
 					case 3:
 					{
-						std::cout << "Enter the new student grant:" << std::endl;
-						std::cin >> bufferStudent->iGrant;
+						cout << "Enter the new student grant:" << endl;
+						cin >> bufferStudent->iGrant;
 						if (bufferGroup->topStudent == bufferStudent)
 						{
 							bufferStudent->dScore = bufferStudent->iSumOfGrades / bufferStudent->iGrant;
@@ -573,17 +577,17 @@ void groupAdd(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 
 	while (true)
 	{
-		std::cout << "Enter the group number or '0' to exit the menu:" << std::endl;
-		std::cin >> acGroup;
-		int t = 0;
+		cout << "Enter the group number or '0' to exit the menu:" << endl;
+		cin >> acGroup;
+		int key = 0;
 
 		if (!strcmp(acGroup, "0\0"))
 		{
-			std::cout << std::endl
-					  << "Data entry is complete." << std::endl;
+			cout << endl
+					  << "Data entry is complete." << endl;
 			break;
 		}
-		if (!head)
+		if (head == nullptr)
 		{
 			head = new Group;
 			back = head;
@@ -602,7 +606,7 @@ void groupAdd(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 				if (!strcmp(bufferGroup->acGroup, acGroup))
 					break;
 
-				if (!bufferGroup->nextGroup)
+				if (bufferGroup->nextGroup == nullptr)
 				{
 					back->nextGroup = new Group;
 					back = back->nextGroup;
@@ -617,7 +621,7 @@ void groupAdd(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 					bufferGroup = bufferGroup->nextGroup;
 			}
 		}
-		if (!back->firstStudent)
+		if (back->firstStudent == nullptr)
 		{
 			back->firstStudent = new Student; // Создаём узел для нового студентав в новой группе
 			back->lastStudent = back->firstStudent;
@@ -625,7 +629,7 @@ void groupAdd(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 			back->topStudent = back->firstStudent; // Добавляем нового студента в качестве лучшего студента
 
 			back->lastStudent->nextStudent = nullptr;
-			t++;
+			key++;
 		}
 		else
 		{
@@ -633,31 +637,32 @@ void groupAdd(Group *(&head), Group *(&back), Group *(&headSorted), Group *(&bac
 			back->lastStudent = back->lastStudent->nextStudent;
 			back->lastStudent->nextStudent = nullptr;
 		}
-		std::cout << std::endl
+		cout << endl
 				  << "Enter student's full name: ";
-		std::cin.getline(back->lastStudent->acName, 100);
+		cin.getline(back->lastStudent->acName, 100);
+		cin.getline(back->lastStudent->acName, 100);
 
 		strcpy(back->lastStudent->acGroup, back->acGroup);
 
-		std::cout << std::endl
+		cout << endl
 				  << "Enter student grades: ";
 		for (int iI = 0; iI < 5; iI++)
 		{
-			std::cin >> back->lastStudent->aiGrades[iI];
+			cin >> back->lastStudent->aiGrades[iI];
 			back->lastStudent->iSumOfGrades += (int)(*&back->lastStudent->aiGrades[iI]);
 		}
-		std::cout << std::endl
+		cout << endl
 				  << "Enter the size of the student's grant: ";
-		std::cin >> back->lastStudent->iGrant;
+		cin >> back->lastStudent->iGrant;
 		back->lastStudent->dScore = (double)back->lastStudent->iSumOfGrades / back->lastStudent->iGrant;
-		if (head->nextGroup && t != 0)
-			sort_top(backSorted, back, headSorted, t);
+		if (head->nextGroup && key != 0)
+			sort_top(backSorted, back, headSorted, key);
 		else if (back->topStudent->dScore < back->lastStudent->dScore)
 		{
 			back->topStudent = back->lastStudent;
-			sort_top(backSorted, back, headSorted, t);
+			sort_top(backSorted, back, headSorted, key);
 		}
-		std::cout << "Student entered" << std::endl;
+		cout << "Student entered" << endl;
 	}
 }
 
@@ -681,28 +686,110 @@ void clear(Group *(&head), Group *(&back))
 	}
 }
 
-void task4() {
+/**
+ * [ 4 ] Вывести в порядке возрастания номера групп, в которых соотношение «суммарный объем стипендии» / «общее количество баллов» превышает заданное значение
+ */
+void task4(Group *(&groupSorted))
+{
+	Group *bufferGroup = groupSorted;
+	Student *bufferStudent = { nullptr };
+	cout << "Enter value: ";
+	int iValue = 0;
+	cin >> iValue;
+	cout << "Conclusion in ascending order of the number of groups in which the ratio of \"total grants\" / \"total number of points\" exceeds " << iValue << endl;
 
+	for (int iI = 0; bufferGroup != nullptr; iI++)
+	{
+		int iJ = 1;
+		int iGrantTotal = 0;
+		float iGradesTotal = 0;
+		bufferStudent = bufferGroup->firstStudent;
+		for (; bufferStudent != nullptr; iJ++)
+		{
+			iGradesTotal += (bufferStudent->iSumOfGrades / float(5));
+			iGrantTotal += bufferStudent->iGrant;
+			bufferStudent = bufferStudent->nextStudent;
+		}
+		iGradesTotal /= float(iJ);
+
+		if (iGrantTotal / float(iGradesTotal) > float(0))
+		{
+			cout << "[ " << iI << " ] Group " << bufferGroup->acGroup << ": " << iGrantTotal / float(iGradesTotal) << endl;
+		}
+		bufferGroup = bufferGroup->nextGroupSorted;
+	}
 }
 
-void task14() {
+/**
+ * [ 19 ] Вывести в алфавитном порядке список той группы, в которой средний балл является максимальным по потоку
+ */
+void task19(Group *(&groupSorted))
+{
+	Group *bufferGroup = groupSorted, *maxBufferGroup = groupSorted->nextGroupSorted;
+	Student *bufferStudent = { nullptr }, *maxBufferStudent = { nullptr };
 
+	float fMaxGradesAverage = 0;
+	int iCount = 1;
+	maxBufferGroup->firstStudent;
+	for (; maxBufferStudent != nullptr; iCount++)
+	{
+		fMaxGradesAverage += (maxBufferStudent->iSumOfGrades / float(5));
+		maxBufferStudent = maxBufferStudent->nextStudent;
+	}
+	fMaxGradesAverage /= iCount;
+
+	while (bufferGroup)
+	{
+		float fGradesAverage = 0;
+		iCount = 1;
+		bufferStudent = bufferGroup->firstStudent;
+		for (; bufferStudent != nullptr; iCount++)
+		{
+			fMaxGradesAverage += (bufferStudent->iSumOfGrades / float(5));
+			bufferStudent = bufferStudent->nextStudent;
+		}
+		fGradesAverage /= iCount;
+
+		if (fGradesAverage > fMaxGradesAverage)
+		{
+			maxBufferGroup = bufferGroup;
+			fMaxGradesAverage = fGradesAverage;
+		}
+
+		bufferGroup = bufferGroup->nextGroupSorted;
+	}
+
+	maxBufferStudent = maxBufferGroup->firstStudent;
+	cout << "Display in alphabetical order a list of the group with the maximum average score for the stream" << endl;
+
+	if (maxBufferGroup != nullptr)
+		cout << "Group " << maxBufferGroup->acGroup << "\tAverage score: " << fMaxGradesAverage << endl << endl;
+
+	for (int iI = 1; maxBufferStudent != nullptr; iI++)
+	{
+		cout << "[ " << iI << " ] - " << maxBufferStudent->acName << endl
+			 << "\tGrades: ";
+		for (int iJ = 0; iJ < 5; iJ++)
+			cout << maxBufferStudent->aiGrades[iJ] << ' ';
+		cout << endl << endl;
+		maxBufferStudent = maxBufferStudent->nextStudent;
+	}
 }
 
 void menu()
 {
-	std::cout << CLEAR
-			  << "Menu:" << std::endl
-			  << "\t[ 1 ] - Console / file input" << std::endl
-			  << "\t[ 2 ] - Console / file output" << std::endl
-			  << "\t[ 3 ] - Editing data about students and groups of the stream" << std::endl
-			  << "\t[ 4 ] - Adding new students" << std::endl
-			  << std::endl
-			  << "\t[ 6 ] - ( Task 4 )" << std::endl
-			  << "\t[ 7 ] - ( Task 14 )" << std::endl
-			  << std::endl
-			  << "\t[ 0 ] - Exiting the program" << std::endl
-			  << std::endl
+	cout << CLEAR
+			  << "Menu:" << endl
+			  << "\t[ 1 ] - Console / file input" << endl
+			  << "\t[ 2 ] - Console / file output" << endl
+			  << "\t[ 3 ] - Editing data about students and groups of the stream" << endl
+			  << "\t[ 4 ] - Adding new students" << endl
+			  << endl
+			  << "\t[ 6 ] - ( Task 4 )" << endl
+			  << "\t[ 7 ] - ( Task 14 )" << endl
+			  << endl
+			  << "\t[ 0 ] - Exiting the program" << endl
+			  << endl
 			  << "Enter answer: ";
 }
 
@@ -714,7 +801,7 @@ int main()
 	{
 		menu();
 		int iChoice;
-		std::cin >> iChoice;
+		cin >> iChoice;
 		switch (iChoice)
 		{
 			case 0:
@@ -722,30 +809,30 @@ int main()
 
 			case 1:
 			{
-				std::cout << CLEAR
-						  << "[ 1 ] - Console input" << std::endl
-						  << "[ 2 ] - File input" << std::endl
-						  << "[ 0 ] - Exit" << std::endl;
+				cout << CLEAR
+						  << "[ 1 ] - Console input" << endl
+						  << "[ 2 ] - File input" << endl
+						  << "[ 0 ] - Exit" << endl;
 				iChoice = 0;
-				std::cin >> iChoice;
+				cin >> iChoice;
 				switch (iChoice)
 				{
 					case 1:
 					{
-						if (headGroup)
+						if (headGroup != nullptr)
 						{
-							std::cout << std::endl
-									  << "There is already a list of groups and students, do you want to rewrite it?" << std::endl
-									  << "[ 1 ] - Yes" << std::endl
-									  << "[ 0 ] - No" << std::endl;
+							cout << endl
+									  << "There is already a list of groups and students, do you want to rewrite it?" << endl
+									  << "[ 1 ] - Yes" << endl
+									  << "[ 0 ] - No" << endl;
 							iChoice = 0;
-							std::cin >> iChoice;
+							cin >> iChoice;
 							if (iChoice == 0)
 								break;
 							else
 							{
 								clear(headGroup, backGroup);
-								std::cout << "Everything deleted";
+								cout << "Everything deleted";
 							}
 						}
 						groupAdd(headGroup, backGroup, headGroupSorted, backGroupSorted);
@@ -754,20 +841,20 @@ int main()
 
 					case 2:
 					{
-						if (headGroup)
+						if (headGroup != nullptr)
 						{
-							std::cout << std::endl
-									  << "There is already a list of groups and students, do you want to rewrite it?" << std::endl
-									  << "[ 1 ] - Yes" << std::endl
-									  << "[ 0 ] - No" << std::endl;
+							cout << endl
+									  << "There is already a list of groups and students, do you want to rewrite it?" << endl
+									  << "[ 1 ] - Yes" << endl
+									  << "[ 0 ] - No" << endl;
 							iChoice = 0;
-							std::cin >> iChoice;
+							cin >> iChoice;
 							if (iChoice == 0)
 								break;
 							else
 							{
 								clear(headGroup, backGroup);
-								std::cout << "Everything deleted";
+								cout << "Everything deleted";
 							}
 						}
 						fileInput(headGroup, backGroup, headGroupSorted, backGroupSorted);
@@ -782,19 +869,19 @@ int main()
 
 			case 2:
 			{
-				if (!headGroup)
+				if (headGroup == nullptr)
 				{
-					std::cout << std::endl
+					cout << endl
 							  << "No data entered";
 					continue;
 				}
 
-				std::cout << CLEAR
-						  << "[ 1 ] - Console input" << std::endl
-						  << "[ 2 ] - File input" << std::endl
-						  << "[ 0 ] - Exit" << std::endl;
+				cout << CLEAR
+						  << "[ 1 ] - Console input" << endl
+						  << "[ 2 ] - File input" << endl
+						  << "[ 0 ] - Exit" << endl;
 				iChoice = 0;
-				std::cin >> iChoice;
+				cin >> iChoice;
 				switch (iChoice)
 				{
 					case 1:
@@ -817,9 +904,9 @@ int main()
 
 			case 3:
 			{
-				if (!headGroup)
+				if (headGroup == nullptr)
 				{
-					std::cout << std::endl
+					cout << endl
 							  << "No data entered";
 					continue;
 				}
@@ -829,9 +916,9 @@ int main()
 			}
 			case 4:
 			{
-				if (!headGroup)
+				if (headGroup == nullptr)
 				{
-					std::cout << std::endl
+					cout << endl
 							  << "No data entered";
 					continue;
 				}
@@ -842,27 +929,27 @@ int main()
 
 			case 6:
 			{
-				if (!headGroup)
+				if (headGroup == nullptr)
 				{
-					std::cout << std::endl
+					cout << endl
 							  << "No data entered";
 					continue;
 				}
 
-				//TODO: task4(headGroup, backGroup);
+				task4(headGroupSorted);
 				continue;
 			}
 
 			case 7:
 			{
-				if (!headGroup)
+				if (headGroup == nullptr)
 				{
-					std::cout << std::endl
+					cout << endl
 							  << "No data entered";
 					continue;
 				}
 
-				//TODO: task14(headGroupSorted, backGroupSorted);
+				task19(headGroupSorted);
 				continue;
 			}
 
