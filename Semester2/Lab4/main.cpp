@@ -96,7 +96,7 @@ int main()
     PhoneCall *bufferCall, *plusCall, *bufferNewCall, *bufferEndCall, *bufferNewEndCall;
     bufferEndCall = nullptr;
     bufferCall = nullptr;
-    int iTalkTimeLimit = 0, num_nudes = 0;
+    int iTalkTimeLimit = 0;
     char number[12] = " ";
 
     for (int i = 0;; i++)
@@ -144,12 +144,13 @@ int main()
         {
         case 1:
             output(bufferEndCall, bufferCall);
+            wait();
             break;
         case 2:
             output2(bufferNewEndCall, bufferNewCall);
+            wait();
             break;
         case 3:
-
             bufferEndCall->next = new PhoneCall;
             std::cout << "Enter the incoming number: " << std::endl;
             std::cin >> bufferEndCall->next->acIncomingNumber;

@@ -22,7 +22,7 @@ void wait()
 int main()
 {
     PhoneCall *tempCall, *bufferCall, *plusCall, *buffer2Call;
-    int iTalkTimeLimit = 0, num_nudes = 0;
+    int iTalkTimeLimit = 0, send_nudes = 0;
     char acDeleteNumber[12] = " ";
     tempCall = new PhoneCall;
     bufferCall = tempCall;
@@ -83,12 +83,12 @@ int main()
             iTime = (bufferCall->iTalkTime) - 5;
             buffer2Call = bufferCall->next;          // Присваиваем к промежуточной ячейке следующий узел
             if ((bufferCall->iTalkTime) % 5 == 0) // Проверка на остаток
-                num_nudes = ((bufferCall->iTalkTime) / 5) - 1;
+                send_nudes = ((bufferCall->iTalkTime) / 5) - 1;
             else
-                (num_nudes = ((bufferCall->iTalkTime) / 5));
+                (send_nudes = ((bufferCall->iTalkTime) / 5));
 
             plusCall->iTalkTime = 5;
-            for (int iI = 0; iI < num_nudes; iI++) // Цикл который копирует информацию в новосозданную ячейку
+            for (int iI = 0; iI < send_nudes; iI++) // Цикл который копирует информацию в новосозданную ячейку
             {
                 plusCall->next = new PhoneCall;
                 strcpy(plusCall->next->acIncomingNumber, plusCall->acIncomingNumber);
@@ -103,7 +103,7 @@ int main()
                     plusCall->next->iTalkTime = iTime % 5;
                 }
 
-                if (iI == num_nudes - 1) // Создание новых ячеек
+                if (iI == send_nudes - 1) // Создание новых ячеек
                 {
                     plusCall = plusCall->next;
                     plusCall->next = buffer2Call;

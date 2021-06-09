@@ -78,6 +78,9 @@
         "hash_map": "cpp",
         "forward_list": "cpp",
         "unordered_set": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "*.rh": "cpp",
+        "xlocbuf": "cpp",
+        "locale": "cpp"
     }
 }
