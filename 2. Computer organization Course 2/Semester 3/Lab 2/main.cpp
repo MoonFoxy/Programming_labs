@@ -122,7 +122,7 @@ void getPrintColor(unsigned char colors)
             break;
 
         case 15:
-            cout < "16 ";
+            cout << "16 ";
             break;
 
         default:
