@@ -797,7 +797,7 @@ int main()
 {
 	Group *headGroup{ nullptr }, *backGroup{ nullptr }, *headGroupSorted{ nullptr }, *backGroupSorted{ nullptr };
 
-	while(true)
+	while (true)
 	{
 		menu();
 		int iChoice;
