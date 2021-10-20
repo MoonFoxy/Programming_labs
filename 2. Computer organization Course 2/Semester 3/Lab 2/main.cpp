@@ -13,7 +13,7 @@ union type
 
 void print(double input)
 {
-    type newType;                                          // supertype - это тип данных в котором два поля
+    type newType;                                               // type - это тип данных в котором два поля
     newType.d = input;                                          // И там где поле double, присваиваем значение input // Обращение к полям ll и d через точку
     for (int i = 16 * sizeof(newType.ll) - 1; i > -1; i--)      // 64 раз (от 63 до 0) делаем
     {
