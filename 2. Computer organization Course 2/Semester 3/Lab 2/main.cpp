@@ -1,36 +1,25 @@
-#include <iostream>     // Поток ввода/вывода
-#include <stdio.h>      // Функция printf()
-#include <stdlib.h>     // ХЗ зачем
-#include <conio.h>      // Функция getch() window() textattr()
-#include <dos.h>        // Функция delay() REGS int86()
-#include <windows.h>    // Функция Sleep()
-
-using namespace std;
+#include <conio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <dos.h>
+#include <time.h> // для delay();
+#include <windows.h>
 
 union type
 {
     unsigned long long ll;
-    long double d;
+    double d;
 };
 
-void wait()
+void print(double input)
 {
-    cout << endl
-         << "Press any key to continue...";
-    getch();
-    cout << endl;
-}
-
-void printLongDouble(long double x)
-{
-    type m;
-    m.d = x;
-    for (int i = 16 * sizeof(m.ll) - 1; i > -1; i--)
+    type newType;                                          // supertype - это тип данных в котором два поля
+    newType.d = input;                                          // И там где поле double, присваиваем значение input // Обращение к полям ll и d через точку
+    for (int i = 16 * sizeof(newType.ll) - 1; i > -1; i--)      // 64 раз (от 63 до 0) делаем
     {
-        printf("%d", m.ll >> i & 1);
+        cprintf("%d", newType.ll >> i & 1);                     // Побитовое И с 1, в итоге бор из 0-ей и 1-иц
     }
-    cout << endl
-         << '\r';
+    cprintf("\n\r");                                            // Когда вывели все биты, перевод строки в заданной ноке
 }
 
 void scroll(int direction, int lines, char l_row, char l_col, char r_row, char r_col, char attr)
@@ -38,218 +27,153 @@ void scroll(int direction, int lines, char l_row, char l_col, char r_row, char r
     union REGS regs;
     if (direction)
     {
-        regs.h.al = lines;
-        regs.h.ah = direction;
+        regs.h.al = lines;  // Отступ вниз
+        regs.h.ah = direction;  // Направление скроллинга [ 0 - очистка, 6 - вверх, 7 - вниз ]
     }
     else
     {
         regs.h.al = lines;
         regs.h.ah = 6;
     }
-    regs.h.ch = l_row;
-    regs.h.cl = l_col;
-    regs.h.dh = r_row;
-    regs.h.dl = r_col;
-    regs.h.bh = attr;
+    regs.h.ch = l_row;  // Левый верхний угол y
+    regs.h.cl = l_col;  // Левый верхний угол x
+    regs.h.dh = r_row;  // Правый нижний угол y
+    regs.h.dl = r_col;  // Правый нижний угол x
+    regs.h.bh = attr;   // Цвет
     int86(0x10, &regs, &regs);
 }
 
 void getPrintColor(unsigned char colors)
 {
-    unsigned char bg = colors >> 4;
-    unsigned char text = colors & 15;
+    unsigned char bg = colors >> 4;   // Каждый раз получая число i сдвигаем побитово 4 [ там же 16 цветов ]
+    unsigned char text = colors & 15; // Через побитовое И с 15, получаем число x которое всегда будет 0 <= x <= 15
 
-    switch (bg)
+    /*
+        ************ Карта цветов **************
+
+        BLACK Черный 0
+        BLUE Синий 1
+        GREEN Зеленый 2
+        CYAN Сине-зеленый 3
+        RED Красный 4
+        MAGENTA Красно-синий 5
+        BROWN Коричневый 6
+        LIGHTGRAY Светло-серый 7
+        DARKGRAY Темно-серый 8
+        LIGHTBLUE Ярко-синий 9
+        LIGHTGREEN Ярко-зеленый 10
+        LIGHTCYAN Яркий сине-зеленый 11
+        LIGHTRED Ярко-красный 12
+        LIGHTMAGENTA Яркий красно-синий 13
+        YELLOW Желтый 14
+        WHITE Белый 15
+    */
+
+    // Просто каждый раз попадаем в один из case-ов и печатаем число цвет фон и текст
+    switch (bg) // Фон [ 8 цветов ]
     {
         case 0:
-            cout << "1 ";
+            cprintf("1 ");
             break;
-
         case 1:
-            cout << "2 ";
+            cprintf("2 ");
             break;
-
         case 2:
-            cout << "3 ";
+            cprintf("3 ");
             break;
-
         case 3:
-            cout << "4 ";
+            cprintf("4 ");
             break;
-
         case 4:
-            cout << "5 ";
+            cprintf("5 ");
             break;
-
         case 5:
-            cout << "6 ";
+            cprintf("6 ");
             break;
-
         case 6:
-            cout << "7 ";
+            cprintf("7 ");
             break;
-
         case 7:
-            cout << "8 ";
-            break;
-
-        case 8:
-            cout << "9 ";
-            break;
-
-        case 9:
-            cout << "10 ";
-            break;
-
-        case 10:
-            cout << "11 ";
-            break;
-
-        case 11:
-            cout << "12 ";
-            break;
-
-        case 12:
-            cout << "13 ";
-            break;
-
-        case 13:
-            cout << "14 ";
-            break;
-
-        case 14:
-            cout << "15 ";
-            break;
-
-        case 15:
-            cout << "16 ";
-            break;
-
-        default:
-            cout << "? ";
+            cprintf("8 ");
             break;
     }
 
-    switch (text)
+    switch (text)   // Текст [ 16 цветов ]
     {
         case 0:
-            cout << "Черный\r";
+            cprintf("1 ");
             break;
-
         case 1:
-            cout << "Синий\r";
+            cprintf("2 ");
             break;
-
         case 2:
-            cout << "Зеленый\r";
+            cprintf("3 ");
             break;
-
         case 3:
-            cout << "Циановый\r";
+            cprintf("4 ");
             break;
-
         case 4:
-            cout << "Красный\r";
+            cprintf("5 ");
             break;
-
         case 5:
-            cout << "Пурпурный\r";
+            cprintf("6 ");
             break;
-
         case 6:
-            cout << "Коричневый\r";
+            cprintf("7 ");
             break;
-
         case 7:
-            cout << "Светло-серый\r";
+            cprintf("8 ");
             break;
-
         case 8:
-            cout << "Темно-серый\r";
+            cprintf("9 ");
             break;
-
         case 9:
-            cout << "Светло-голубой\r";
+            cprintf("10 ");
             break;
-
         case 10:
-            cout << "Светло-зеленый\r";
+            cprintf("11 ");
             break;
-
         case 11:
-            cout << "Светло-циановый\r";
+            cprintf("12 ");
             break;
-
         case 12:
-            cout << "Светло-красный\r";
+            cprintf("13 ");
             break;
-
         case 13:
-            cout << "Светло-пурный\r";
+            cprintf("14 ");
             break;
-
         case 14:
-            cout << "Желтый\r";
+            cprintf("15 ");
             break;
-
         case 15:
-            cout << "Белый\r";
-            break;
-
-        default:
-            cout << "??????\r";
+            cprintf("16 ");
             break;
     }
 }
 
 int main()
 {
-    long double inputLongDouble;
-    scroll(0, 0, 0, 0, 25, 80, 7);
-    window(20, 10, 60, 20);         // Установка окна вывода в консоле
-    textattr(112);                  // Устанавливает одновременно как цвета переднего плана, так и фона
-    scroll(0, 0, 9, 19, 19, 59, 7); // Скроллинг снизу вверх
-    cout << "\n\n\n\n\n\n\n\n\r";
-
-    int answer;
-    while (true)
+    double input = 3.14;            // Число которое будет представлено в двоичном итерпретации, можешь изменить, ставь что пожелаешь
+    clrscr();                       // Чистка экрана
+    window(25, 10, 55, 20);         // Установка окна вывода в консоле [ l_row, r_row, l_col, r_col ]
+    textattr(112);                  // Устанавливает одновремено как цвет переднего плана, так и фона [ 112 (01110000) – инверсные цвета (черный на светлом) ]
+    scroll(0, 0, 9, 24, 19, 54, 0); // Скроллиг сверху вниз
+    for (int i = 0; i < 127; i++)   // т.к. 8 цветов фона + 16 цветов текста, всего 128 комбинациий, отсчет с 0 до 127
     {
-        cout << "Показать магию?" << endl
-             << "[ 1 ] - Да" << endl
-             << "[ 0 ] - Нет ( Выход )" << endl;
-
-        cin >> answer;
-
-        switch (answer)
-        {
-            case 0:
-                break;
-
-            case 1:
-            {
-                unsigned char i = 0;
-                do
-                {
-                    textattr(i);
-                    inputLongDouble = ((0.956358714) * (rand() % 12501));
-                    printLongDouble(inputLongDouble);
-                    getPrintColor(i);
-                    i++;
-                    Sleep(1.5);                     // Задержка в милисекундах
-                    scroll(6, 2, 9, 19, 19, 59, i); // Скроллинг
-                } while (i < 127);
-                wait();
-                continue;
-            }
-
-            default:
-                cout << endl << "Неверный ввод!" << endl;
-                wait();
-                continue;
-        }
+        textattr(i);                    // Задаем цвет текста и фона
+        print(input);                   // Печатаем двоичое представление числа типа Double (64 бит)
+        getPrintColor(i);               // Выводим значение цвета фона и текста
+        cprintf("\r");                  // Переход на новую строку (с переходом на начало строки)
+        delay(200);                     // Задержка в милисекудах 0.2 сек = 200 мсек итервал T сек
+        scroll(7, 3, 9, 24, 19, 54, i); /* Cкроллиг
+                                            [ 1st первое число - 6 (направлеие скроллига (7 обратно)),
+                                            2nd второе число итервал S строк,
+                                            все остальное одни меньше изначально заданного окна,
+                                            по сути мы берем окно, строчку нижестоящую текущего окна,
+                                            с теми же размерами и поднимаем место текущей ]
+                                        */
     }
-
-    cout << "\n\r ----- ВСЕ, 2-Я ЛАБА ГОТОВА! --------\n\r";
-    wait();
+    cprintf("\n\rThe program has been ends...\n\r");
+    getch(); // Ожидаем нажатия любой клавиши
     return 0;
 }
