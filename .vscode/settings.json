@@ -81,6 +81,7 @@
         "typeindex": "cpp",
         "*.rh": "cpp",
         "xlocbuf": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "BGIDEMO.C": "cpp"
     }
 }
