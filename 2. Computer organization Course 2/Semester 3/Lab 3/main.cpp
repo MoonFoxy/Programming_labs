@@ -129,7 +129,7 @@ int main()
 	/**
 	 * Рисуем метки и подписи на оси Х
 	 */
-	int count = (XEND - XSTART) * 2;
+	int count = (XEND - XSTART) * 2 + 0.5;
 	// Метки
 	for (i = 1; i <= count; i++)
 	{
