@@ -1,6 +1,6 @@
 #include <conio.h>
 #include <dos.h>
-#include <graphics.h>
+// #include <graphics.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,8 +34,7 @@ int *considerFunction(float *Fmax, float *Fmin)
 	double x = XSTART * M_PI, dx = (XEND - XSTART) * M_PI / N;
 	float *fRaw = new float[N];
 
-	*Fmax = graphFunction(x);
-	*Fmin = *Fmax;
+	*Fmin = (*Fmax = graphFunction(x));
 	for (i = 0; i < N; i++, x += dx)
 	{
 		fRaw[i] = graphFunction(x);
