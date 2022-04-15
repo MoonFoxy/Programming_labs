@@ -24,9 +24,10 @@
         },
         {
             "type": "cppbuild",
-            "label": "C/C++: g++ build active file ver",
+            "label": "C/C++: g++ build active file",
             "command": "/usr/bin/g++",
             "args": [
+                "-pthread", // -pthread is required for multithreading support
                 "-g",
                 "${file}",
                 "-o",

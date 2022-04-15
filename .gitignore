@@ -11,5 +11,5 @@
 # Исключить папки
 /.vs/
 /.idea/
-/0. Sandbox/**
-!/0. Sandbox/*.md
+/Sandbox/**
+!/Sandbox/*.md

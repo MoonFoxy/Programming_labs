@@ -42,7 +42,7 @@ int main()
             }
 
             std::cout << iI << " ";
-            iDozens = ((iI / 10 + 1) * 10);
+            iDozens = ((iI / 10 + 1) * 110);
         }
     }
 
