@@ -15,12 +15,14 @@ void *proc1(void *arg)
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
 		ts.tv_sec += 1;
-		while (pthread_mutex_timedlock(&mutex, &ts))
+
+		int code = pthread_mutex_timedlock(&mutex, &ts);
+		if (code != 0)
 		{
-			sleep(1);
-			clock_gettime(CLOCK_REALTIME, &ts);
-			ts.tv_sec += 1;
+			std::cout << "Ошибка в Потоке 1: " << strerror(code) << std::endl;
+			continue;
 		}
+
 		for (int i = 0; i < 10; i++)
 		{
 			std::cout << "1";
@@ -49,12 +51,14 @@ void *proc2(void *arg)
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
 		ts.tv_sec += 1;
-		while (pthread_mutex_timedlock(&mutex, &ts))
+
+		int code = pthread_mutex_timedlock(&mutex, &ts);
+		if (code != 0)
 		{
-			sleep(1);
-			clock_gettime(CLOCK_REALTIME, &ts);
-			ts.tv_sec += 1;
+			std::cout << "Ошибка в Потоке 2: " << strerror(code) << std::endl;
+			continue;
 		}
+
 		for (int i = 0; i < 10; i++)
 		{
 			std::cout << "2";

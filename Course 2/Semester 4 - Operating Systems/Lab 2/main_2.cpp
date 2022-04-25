@@ -12,13 +12,21 @@ void *proc1(void *arg)
 
 	while (*flag == 0)
 	{
-		while (pthread_mutex_trylock(&mutex)) sleep(1);
+		int code = pthread_mutex_trylock(&mutex);
+		if (code != 0)
+		{
+			std::cout << "Ошибка в Потоке 1: " << strerror(code) << std::endl;
+			sleep(1);
+			continue;
+		}
+
 		for (int i = 0; i < 10; i++)
 		{
 			std::cout << "1";
 			std::cout << std::flush;
 			sleep(1);
 		}
+		std::cout << std::flush;
 		pthread_mutex_unlock(&mutex);
 		sleep(1);
 	}
@@ -37,13 +45,21 @@ void *proc2(void *arg)
 
 	while (*flag == 0)
 	{
-		while (pthread_mutex_trylock(&mutex)) sleep(1);
+		int code = pthread_mutex_trylock(&mutex);
+		if (code != 0)
+		{
+			std::cout << "Ошибка в Потоке 1: " << strerror(code) << std::endl;
+			sleep(1);
+			continue;
+		}
+
 		for (int i = 0; i < 10; i++)
 		{
 			std::cout << "2";
 			std::cout << std::flush;
 			sleep(1);
 		}
+		std::cout << std::flush;
 		pthread_mutex_unlock(&mutex);
 		sleep(1);
 	}
