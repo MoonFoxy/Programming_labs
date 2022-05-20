@@ -82,6 +82,7 @@
         "*.rh": "cpp",
         "xlocbuf": "cpp",
         "locale": "cpp",
-        "BGIDEMO.C": "cpp"
+        "BGIDEMO.C": "cpp",
+        "csignal": "cpp"
     }
 }
