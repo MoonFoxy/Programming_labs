@@ -25,6 +25,7 @@ void sig_handler(__attribute__((unused)) int signo)
     shm_unlink("/user");
     exit(0);
 }
+
 int main()
 {
     fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
